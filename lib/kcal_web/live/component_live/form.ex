@@ -226,13 +226,6 @@ defmodule KcalWeb.ComponentLive.Form do
                 />
               </div>
             </div>
-
-            <button
-              type="submit"
-              class="rounded-none border-2 border-black bg-brand text-black px-4 py-2 font-bold uppercase tracking-wide hover:bg-black hover:text-white"
-            >
-              Salvar componente
-            </button>
           </form>
 
           <%!-- 2. Ingredient picker --%>
@@ -386,6 +379,19 @@ defmodule KcalWeb.ComponentLive.Form do
                 </form>
               </li>
             </ul>
+          </div>
+
+          <%!-- Save lives at the bottom, after the component is fully built.
+                `form="component-form"` keeps it tied to the identity form even
+                though it sits outside it. --%>
+          <div class="border-t-2 border-black pt-4">
+            <button
+              type="submit"
+              form="component-form"
+              class="w-full rounded-none border-2 border-black bg-brand text-black px-4 py-3 font-bold uppercase tracking-wide hover:bg-black hover:text-white sm:w-auto"
+            >
+              Salvar componente
+            </button>
           </div>
         </div>
 

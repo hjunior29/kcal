@@ -42,6 +42,7 @@ defmodule KcalWeb.CoreComponents do
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil
   attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
+  attr :autohide, :boolean, default: true, doc: "auto-dismiss after a few seconds"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
@@ -53,26 +54,26 @@ defmodule KcalWeb.CoreComponents do
     <div
       :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
       id={@id}
-      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
-      class="toast toast-top toast-end z-50"
+      phx-hook={@autohide && "AutoDismissFlash"}
+      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
+      class="flex w-80 max-w-[calc(100vw-2rem)] cursor-pointer border-2 border-black bg-white text-black sm:w-96"
       {@rest}
     >
+      <%!-- Brutalist accent bar: brand yellow for info, red for error. --%>
       <div class={[
-        "alert w-80 sm:w-96 max-w-80 sm:max-w-96 text-wrap",
-        @kind == :info && "alert-info",
-        @kind == :error && "alert-error"
-      ]}>
+        "w-2 shrink-0",
+        @kind == :info && "bg-brand",
+        @kind == :error && "bg-red-600"
+      ]} />
+      <div class="flex flex-1 items-start gap-2 px-3 py-2.5">
         <.icon :if={@kind == :info} name="hero-information-circle" class="size-5 shrink-0" />
         <.icon :if={@kind == :error} name="hero-exclamation-circle" class="size-5 shrink-0" />
-        <div>
-          <p :if={@title} class="font-semibold">{@title}</p>
-          <p>{msg}</p>
+        <div class="min-w-0 flex-1">
+          <p :if={@title} class="text-xs font-bold uppercase tracking-wide">{@title}</p>
+          <p class="text-sm">{msg}</p>
         </div>
-        <div class="flex-1" />
-        <button type="button" class="group self-start cursor-pointer" aria-label="close">
-          <.icon name="hero-x-mark" class="size-5 opacity-40 group-hover:opacity-70" />
-        </button>
+        <.icon name="hero-x-mark" class="size-5 shrink-0 opacity-50" />
       </div>
     </div>
     """

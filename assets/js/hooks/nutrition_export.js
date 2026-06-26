@@ -1,5 +1,7 @@
-// Rasterizes the Anvisa nutrition label to a PNG using html2canvas
-// (loaded from a CDN <script> in root.html.heex as `window.html2canvas`).
+// Rasterizes the Anvisa nutrition label to a PNG using html-to-image
+// (loaded from a CDN <script> in root.html.heex as `window.htmlToImage`).
+// html-to-image rasterizes via an SVG <foreignObject>, so the browser renders
+// modern CSS (oklch colors, etc.) natively — unlike html2canvas.
 //
 // Attach the hook to a wrapper element that contains:
 //   * one element marked `[data-export-target]` — the label to capture
@@ -18,23 +20,22 @@ export const NutritionExport = {
     const target = this.el.querySelector("[data-export-target]")
     if (!target) return
 
-    if (!window.html2canvas) {
+    if (!window.htmlToImage) {
       this.flash(btn, "Biblioteca de imagem indisponível")
       return
     }
 
-    const original = btn.textContent
+    // Don't touch the button's contents — it holds an icon, not text. Status
+    // feedback goes to the [data-export-status] note instead.
     btn.setAttribute("disabled", "true")
     btn.setAttribute("aria-busy", "true")
-    btn.textContent = "Gerando…"
     this.flash(btn, "Gerando imagem…")
 
     try {
-      const canvas = await window.html2canvas(target, {
-        scale: 2,
+      const canvas = await window.htmlToImage.toCanvas(target, {
+        pixelRatio: 2,
         backgroundColor: "#ffffff",
-        logging: false,
-        useCORS: true,
+        cacheBust: true,
       })
 
       if (btn.dataset.export === "copy") {
@@ -48,7 +49,6 @@ export const NutritionExport = {
     } finally {
       btn.removeAttribute("disabled")
       btn.removeAttribute("aria-busy")
-      btn.textContent = original
     }
   },
 
@@ -94,6 +94,10 @@ export const NutritionExport = {
 
   flash(btn, message) {
     const note = this.el.querySelector("[data-export-status]")
-    if (note) note.textContent = message
+    if (!note) return
+    note.textContent = message
+    // Clear the status so it never lingers on screen.
+    clearTimeout(this._noteTimer)
+    this._noteTimer = setTimeout(() => (note.textContent = ""), 4000)
   },
 }

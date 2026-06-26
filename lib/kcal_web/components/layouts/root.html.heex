@@ -11,10 +11,9 @@
       {assigns[:page_title]}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
-    <script
-      defer
-      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-    >
+    <%!-- html-to-image rasterizes the label via SVG <foreignObject>, so it
+          renders modern CSS (oklch, color-mix) natively — unlike html2canvas. --%>
+    <script defer src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js">
     </script>
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>

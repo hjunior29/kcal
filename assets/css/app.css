@@ -138,6 +138,20 @@
     box-shadow: none !important;
   }
 
+  /* Exception: the regulated "ALTO EM" seal keeps the rounded corners from its
+     malha construtiva. These sit in the SAME @layer as the reset above, so the
+     class specificity wins over `*` even though both use !important (an
+     unlayered !important rule would instead LOSE to the layered reset).
+     The seal/bar radii follow the malha proportions (the bar corner radius is
+     roughly a quarter of its height). */
+  .alto-em-seal {
+    border-radius: 16px !important;
+  }
+
+  .alto-em-bar {
+    border-radius: 14px !important;
+  }
+
   ::selection {
     background: #000;
     color: #fff;

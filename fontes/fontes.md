@@ -1,0 +1,2 @@
+esse site tem praticamente todas as informações sobre rotulagem nutricional, incluindo regulamentações, guias e exemplos de como interpretar os rótulos dos alimentos. É uma fonte confiável para profissionais da área de nutrição, fabricantes de alimentos e consumidores interessados em entender melhor os produtos que consomem.
+- https://www.gov.br/anvisa/pt-br/assuntos/alimentos/rotulagem/rotulagem-nutricional

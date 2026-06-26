@@ -26,11 +26,22 @@ import {hooks as colocatedHooks} from "phoenix-colocated/kcal"
 import topbar from "../vendor/topbar"
 import {NutritionExport} from "./hooks/nutrition_export"
 
+// Auto-dismiss a flash notification a few seconds after it appears. Clicking
+// the flash (its phx-click) clears it too, so we just trigger that click.
+const AutoDismissFlash = {
+  mounted() {
+    this.timer = setTimeout(() => this.el.click(), 4500)
+  },
+  destroyed() {
+    clearTimeout(this.timer)
+  },
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks, NutritionExport},
+  hooks: {...colocatedHooks, NutritionExport, AutoDismissFlash},
 })
 
 // Show progress bar on live navigation and form submits. Black bar to match
