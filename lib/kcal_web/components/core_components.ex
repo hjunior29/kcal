@@ -527,8 +527,8 @@ defmodule KcalWeb.CoreComponents do
     <.link
       class={[
         "inline-block rounded-none border-2 border-black px-3 py-1.5 text-sm font-bold uppercase tracking-wide transition-colors",
-        @variant == "solid" && "bg-black text-white hover:bg-white hover:text-black",
-        @variant == "outline" && "bg-white text-black hover:bg-yellow-50"
+        @variant == "solid" && "bg-brand text-black hover:bg-black hover:text-white",
+        @variant == "outline" && "bg-white text-black hover:bg-brand"
       ]}
       {@rest}
     >

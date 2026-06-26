@@ -73,7 +73,7 @@ defmodule KcalWeb.ComponentLive.Index do
           placeholder="Filtrar componentes…"
           phx-debounce="150"
           autocomplete="off"
-          class="w-full rounded-none border-2 border-black bg-white px-3 py-2 text-base focus:outline-none focus:ring-0 focus:border-black focus:bg-yellow-50"
+          class="w-full rounded-none border-2 border-black bg-white px-3 py-2 text-base focus:outline-none focus:ring-0 focus:border-black focus:bg-brand"
         />
       </form>
 
@@ -93,7 +93,7 @@ defmodule KcalWeb.ComponentLive.Index do
           </tr>
         </thead>
         <tbody>
-          <tr :for={row <- @rows} class="border-b border-black/30 hover:bg-yellow-50">
+          <tr :for={row <- @rows} class="border-b border-black/30 hover:bg-brand">
             <td class="px-3 py-2">
               <.link
                 navigate={~p"/components/#{row.component.id}"}

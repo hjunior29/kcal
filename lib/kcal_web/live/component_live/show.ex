@@ -87,14 +87,14 @@ defmodule KcalWeb.ComponentLive.Show do
               <button
                 type="button"
                 data-export="download"
-                class="rounded-none border-2 border-black bg-black text-white px-3 py-2 text-sm font-bold hover:bg-white hover:text-black"
+                class="rounded-none border-2 border-black bg-brand text-black px-3 py-2 text-sm font-bold hover:bg-black hover:text-white"
               >
                 Baixar imagem
               </button>
               <button
                 type="button"
                 data-export="copy"
-                class="rounded-none border-2 border-black bg-white px-3 py-2 text-sm font-bold hover:bg-black hover:text-white"
+                class="rounded-none border-2 border-black bg-white text-black px-3 py-2 text-sm font-bold hover:bg-brand"
               >
                 Copiar imagem
               </button>

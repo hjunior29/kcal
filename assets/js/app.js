@@ -33,10 +33,25 @@ const liveSocket = new LiveSocket("/live", Socket, {
   hooks: {...colocatedHooks, NutritionExport},
 })
 
-// Show progress bar on live navigation and form submits
-topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
-window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
-window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
+// Show progress bar on live navigation and form submits. Black bar to match
+// the brutalist look (no blue).
+topbar.config({barColors: {0: "#111111"}, shadowColor: "rgba(0, 0, 0, .3)"})
+window.addEventListener("phx:page-loading-start", _info => {
+  topbar.show(300)
+  document.body.classList.add("page-loading")
+})
+window.addEventListener("phx:page-loading-stop", _info => {
+  topbar.hide()
+  document.body.classList.remove("page-loading")
+  // Replay the page-enter animation on the freshly patched content so every
+  // navigation fades in (morphdom reuses <main>, so restart it by hand).
+  const main = document.querySelector("main")
+  if (main) {
+    main.classList.remove("page-enter")
+    void main.offsetWidth // force reflow to restart the CSS animation
+    main.classList.add("page-enter")
+  }
+})
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()

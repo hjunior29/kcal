@@ -37,8 +37,8 @@ defmodule KcalWeb.Layouts do
     ~H"""
     <header class="border-b-4 border-black bg-white">
       <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <.link navigate={~p"/"} class="flex items-baseline gap-2">
-          <span class="text-2xl font-extrabold uppercase tracking-tighter">NUTRI</span>
+        <.link navigate={~p"/"} class="flex items-center gap-3 transition-opacity hover:opacity-80">
+          <img src={~p"/images/logo.png"} alt="kcal" class="h-8 w-auto sm:h-9" />
           <span class="hidden text-xs font-mono opacity-60 sm:inline">cálculo nutricional</span>
         </.link>
         <nav class="flex items-center gap-2">
@@ -48,7 +48,7 @@ defmodule KcalWeb.Layouts do
       </div>
     </header>
 
-    <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <main class="page-enter mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       {render_slot(@inner_block)}
     </main>
 

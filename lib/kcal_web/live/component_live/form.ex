@@ -229,7 +229,7 @@ defmodule KcalWeb.ComponentLive.Form do
 
             <button
               type="submit"
-              class="rounded-none border-2 border-black bg-black text-white px-4 py-2 font-bold uppercase tracking-wide hover:bg-white hover:text-black"
+              class="rounded-none border-2 border-black bg-brand text-black px-4 py-2 font-bold uppercase tracking-wide hover:bg-black hover:text-white"
             >
               Salvar componente
             </button>
@@ -269,7 +269,7 @@ defmodule KcalWeb.ComponentLive.Form do
                       do: "Digite para buscar (ex.: ovo, arroz)…",
                       else: "Buscar componente para aninhar…"
                   }
-                  class="w-full rounded-none border-2 border-black bg-white px-3 py-2 focus:outline-none focus:bg-yellow-50"
+                  class="w-full rounded-none border-2 border-black bg-white px-3 py-2 focus:outline-none focus:bg-brand"
                 />
               </form>
 
@@ -279,7 +279,7 @@ defmodule KcalWeb.ComponentLive.Form do
                 </li>
                 <li
                   :for={r <- @results}
-                  class="flex items-center justify-between gap-2 px-3 py-2 hover:bg-yellow-50"
+                  class="flex items-center justify-between gap-2 px-3 py-2 hover:bg-brand"
                 >
                   <div class="min-w-0">
                     <p class="font-medium truncate">{result_name(r)}</p>
@@ -344,7 +344,7 @@ defmodule KcalWeb.ComponentLive.Form do
                         name="quantity"
                         value={num_value(item.quantity)}
                         phx-debounce="150"
-                        class="w-full rounded-none border-2 border-black px-2 py-1 text-sm focus:outline-none focus:bg-yellow-50"
+                        class="w-full rounded-none border-2 border-black px-2 py-1 text-sm focus:outline-none focus:bg-brand"
                       />
                     </div>
                     <div>
@@ -380,7 +380,7 @@ defmodule KcalWeb.ComponentLive.Form do
                       value={num_value(item.grams_per_unit_override)}
                       phx-debounce="150"
                       placeholder="ex.: 50 g por unidade"
-                      class="w-full rounded-none border-2 border-red-600 px-2 py-1 text-sm focus:outline-none focus:bg-yellow-50"
+                      class="w-full rounded-none border-2 border-red-600 px-2 py-1 text-sm focus:outline-none focus:bg-brand"
                     />
                   </div>
                 </form>
@@ -584,7 +584,7 @@ defmodule KcalWeb.ComponentLive.Form do
 
   defp input_class(field) do
     [
-      "w-full rounded-none border-2 bg-white px-3 py-2 focus:outline-none focus:bg-yellow-50",
+      "w-full rounded-none border-2 bg-white px-3 py-2 focus:outline-none focus:bg-brand",
       if(field.errors == [], do: "border-black", else: "border-red-600")
     ]
   end
@@ -592,7 +592,7 @@ defmodule KcalWeb.ComponentLive.Form do
   defp tab_class(active?) do
     [
       "flex-1 px-3 py-2 text-sm font-bold uppercase tracking-wide",
-      if(active?, do: "bg-black text-white", else: "bg-white hover:bg-yellow-50")
+      if(active?, do: "bg-black text-white", else: "bg-white hover:bg-brand")
     ]
   end
 

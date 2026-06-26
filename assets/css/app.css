@@ -91,6 +91,13 @@
   --noise: 0;
 }
 
+/* Brand accent — the pastel cream-yellow lifted straight from the kcal logo
+   (#FDF5CE). Exposed as a Tailwind color, so bg-brand, text-brand,
+   border-brand, hover:bg-brand, focus:bg-brand, etc. all work. */
+@theme {
+  --color-brand: #fdf5ce;
+}
+
 /* Add variants based on LiveView classes */
 @custom-variant phx-click-loading (.phx-click-loading&, .phx-click-loading &);
 @custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
@@ -118,6 +125,9 @@
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
       sans-serif;
     -webkit-font-smoothing: antialiased;
+    /* Always reserve the scrollbar gutter so navigating between a short page
+       (no scrollbar) and a tall one (scrollbar) never shifts the layout. */
+    scrollbar-gutter: stable;
   }
 
   /* Brutalism: no soft corners, no shadows anywhere. */
@@ -138,6 +148,85 @@
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline: 3px solid #000;
     outline-offset: 2px;
+  }
+
+  /* Every actionable control gets the hand cursor. */
+  button:not(:disabled),
+  summary,
+  [role="button"]:not([aria-disabled="true"]),
+  label:has(> input[type="checkbox"]),
+  label:has(> input[type="radio"]) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /* Smooth pre-action feedback (hover, focus, active) everywhere, without
+     touching each component. Square brutalist look stays; only color/opacity
+     and a faint press shift animate. */
+  a,
+  button,
+  summary,
+  label,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  .btn,
+  .tab {
+    transition-property: color, background-color, border-color, outline-color, opacity,
+      transform, fill;
+    transition-duration: 160ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* A subtle, tactile press on buttons/links-as-buttons. */
+  button:not(:disabled):active,
+  [role="button"]:active {
+    transform: translateY(1px);
+  }
+}
+
+/* --- Page & navigation transitions --------------------------------------
+   A gentle fade-and-rise applied to <main> on first paint and replayed on
+   every LiveView navigation (see app.js). The body dims briefly while a new
+   page is loading so navigation never feels abrupt. */
+@keyframes kcal-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: kcal-page-in 260ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+body {
+  transition: opacity 150ms ease;
+}
+
+body.page-loading {
+  opacity: 0.65;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }
 
