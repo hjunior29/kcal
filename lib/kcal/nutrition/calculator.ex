@@ -17,7 +17,7 @@ defmodule Kcal.Nutrition.Calculator do
   free of `Repo`. A `visited` set breaks reference cycles defensively.
   """
 
-  alias Kcal.Nutrition.{Component, ComponentItem, Food, Nutrients}
+  alias Kcal.Nutrition.{ComponentItem, Food, Nutrients}
 
   defmodule Result do
     @moduledoc "Computed totals for a component, plus a per-line breakdown."
@@ -41,9 +41,13 @@ defmodule Kcal.Nutrition.Calculator do
   by id to a struct with `items` (and their `food`/`measure_unit`/`child_component`)
   preloaded.
   """
-  @spec totals(Component.t(), (integer() -> Component.t() | nil)) :: Result.t()
-  def totals(%Component{} = component, loader) when is_function(loader, 1) do
-    do_totals(component, loader, MapSet.new([component.id]))
+  @spec totals(map(), (integer() -> map() | nil)) :: Result.t()
+  def totals(component, loader \\ fn _ -> nil end)
+
+  def totals(%{items: _} = component, loader) when is_function(loader, 1) do
+    component_id = Map.get(component, :id)
+    visited = if component_id, do: MapSet.new([component_id]), else: MapSet.new()
+    do_totals(component, loader, visited)
   end
 
   @doc """
@@ -51,13 +55,15 @@ defmodule Kcal.Nutrition.Calculator do
   per-unit grams come from a line override or the measure unit's default.
   Returns `0.0` when neither is known (e.g. "unidade" without an override).
   """
-  @spec item_grams(ComponentItem.t()) :: float()
-  def item_grams(%ComponentItem{} = item) do
+  @spec item_grams(map()) :: float()
+  def item_grams(%{quantity: q} = item) do
     case grams_per_unit(item) do
       nil -> 0.0
-      gpu -> (item.quantity || 0.0) * gpu
+      gpu -> (q || 0.0) * gpu
     end
   end
+
+  def item_grams(_), do: 0.0
 
   @doc "The two Anvisa columns + the raw totals, ready for display."
   @spec per_100g(Result.t()) :: Nutrients.t()
@@ -76,8 +82,8 @@ defmodule Kcal.Nutrition.Calculator do
 
   # --- internals -----------------------------------------------------------
 
-  defp do_totals(%Component{} = component, loader, visited) do
-    lines = Enum.map(component.items, &line(&1, loader, visited))
+  defp do_totals(%{items: items}, loader, visited) do
+    lines = Enum.map(items, &line(&1, loader, visited))
 
     %Result{
       total_weight_g: Enum.reduce(lines, 0.0, fn l, acc -> acc + l.grams end),
@@ -86,13 +92,13 @@ defmodule Kcal.Nutrition.Calculator do
     }
   end
 
-  defp line(%ComponentItem{} = item, loader, visited) do
+  defp line(item, loader, visited) do
     {grams, nutrients} = contribution(item, loader, visited)
     %{item: item, label: label(item), grams: grams, nutrients: nutrients}
   end
 
   # Base food: grams always count (even zero-calorie mass like water or salt).
-  defp contribution(%ComponentItem{food: %Food{} = food} = item, _loader, _visited) do
+  defp contribution(%{food: %Food{} = food} = item, _loader, _visited) do
     grams = item_grams(item)
     {grams, Nutrients.from_food(food) |> Nutrients.scale(grams / 100.0)}
   end
@@ -100,7 +106,7 @@ defmodule Kcal.Nutrition.Calculator do
   # Nested component: the line's grams count ONLY when the child resolves to real
   # mass, so weight and nutrients never disagree. A cycle, a missing child, or an
   # empty child contributes neither grams nor nutrients.
-  defp contribution(%ComponentItem{child_component_id: child_id} = item, loader, visited)
+  defp contribution(%{child_component_id: child_id} = item, loader, visited)
        when not is_nil(child_id) do
     grams = item_grams(item)
 
@@ -124,14 +130,14 @@ defmodule Kcal.Nutrition.Calculator do
 
   defp contribution(_item, _loader, _visited), do: {0.0, Nutrients.zero()}
 
-  defp grams_per_unit(%ComponentItem{grams_per_unit_override: gpu}) when is_number(gpu), do: gpu
+  defp grams_per_unit(%{grams_per_unit_override: gpu}) when is_number(gpu), do: gpu
 
-  defp grams_per_unit(%ComponentItem{measure_unit: %_{grams_per_unit: gpu}}) when is_number(gpu),
+  defp grams_per_unit(%{measure_unit: %{grams_per_unit: gpu}}) when is_number(gpu),
     do: gpu
 
   defp grams_per_unit(_item), do: nil
 
-  defp label(%ComponentItem{food: %_{name: name}}), do: name
-  defp label(%ComponentItem{child_component: %_{name: name}}), do: name
+  defp label(%{food: %{name: name}}), do: name
+  defp label(%{child_component: %{name: name}}), do: name
   defp label(_item), do: "—"
 end

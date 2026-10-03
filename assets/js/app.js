@@ -37,11 +37,45 @@ const AutoDismissFlash = {
   },
 }
 
+const RecipeImport = {
+  mounted() {
+    this.el.addEventListener("change", (e) => {
+      const file = e.target.files[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        try {
+          const json = JSON.parse(event.target.result)
+          this.pushEvent("import_recipe", json)
+        } catch (err) {
+          alert("Arquivo JSON inválido.")
+        }
+      }
+      reader.readAsText(file)
+      e.target.value = ""
+    })
+  },
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks, NutritionExport, AutoDismissFlash},
+  hooks: {...colocatedHooks, NutritionExport, AutoDismissFlash, RecipeImport},
+})
+
+window.addEventListener("phx:download-json", (e) => {
+  const blob = new Blob([e.detail.content], { type: "application/json" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = e.detail.filename
+  a.click()
+  URL.revokeObjectURL(url)
+})
+
+window.addEventListener("phx:trigger-print", () => {
+  window.print()
 })
 
 // Show progress bar on live navigation and form submits. Black bar to match

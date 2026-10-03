@@ -244,3 +244,22 @@ body.page-loading {
   }
 }
 
+/* Print stylesheet: cleans away UI and leaves only the nutrition facts */
+@media print {
+  header,
+  nav,
+  form,
+  .no-print,
+  [data-export-status],
+  button {
+    display: none !important;
+  }
+
+  body,
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+  }
+}
+

@@ -17,10 +17,12 @@ defmodule KcalWeb.Router do
   scope "/", KcalWeb do
     pipe_through :browser
 
-    live "/", ComponentLive.Index, :index
-    live "/components/new", ComponentLive.Form, :new
-    live "/components/:id/edit", ComponentLive.Form, :edit
-    live "/components/:id", ComponentLive.Show, :show
+    live "/", LandingLive, :index
+    live "/calculadora", CalculatorLive, :index
+    live "/calculator", CalculatorLive, :index
+
+    get "/components", RedirectController, :to_calculator
+    get "/components/*path", RedirectController, :to_calculator
   end
 
   # Other scopes may use custom stacks.
