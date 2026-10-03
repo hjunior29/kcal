@@ -211,11 +211,19 @@ upsert = fn attrs, existing ->
 end
 
 for attrs <- taco_foods do
-  upsert.(attrs, Repo.get_by(Food, source: "TACO", source_code: attrs.source_code))
+  existing =
+    Repo.one(
+      from f in Food,
+        where: f.source == "TACO" and f.source_code == ^attrs.source_code,
+        limit: 1
+    )
+
+  upsert.(attrs, existing)
 end
 
 for attrs <- tbca_foods do
-  upsert.(attrs, Repo.get_by(Food, name: attrs.name))
+  existing = Repo.one(from f in Food, where: f.name == ^attrs.name, limit: 1)
+  upsert.(attrs, existing)
 end
 
 # ----------------------------------------------------------------------------

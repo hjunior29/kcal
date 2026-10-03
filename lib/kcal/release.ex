@@ -17,12 +17,16 @@ defmodule Kcal.Release do
 
     for repo <- repos() do
       {:ok, _, _} =
-        Ecto.Migrator.with_repo(repo, fn _repo ->
-          seeds_file = Path.join(:code.priv_dir(@app), "repo/seeds.exs")
+        Ecto.Migrator.with_repo(repo, fn repo ->
+          if repo.aggregate(Kcal.Nutrition.Food, :count) > 0 do
+            IO.puts("Database already seeded with reference foods. Skipping seed.")
+          else
+            seeds_file = Path.join(:code.priv_dir(@app), "repo/seeds.exs")
 
-          if File.exists?(seeds_file) do
-            IO.puts("Running seed script #{seeds_file}...")
-            Code.eval_file(seeds_file)
+            if File.exists?(seeds_file) do
+              IO.puts("Running seed script #{seeds_file}...")
+              Code.eval_file(seeds_file)
+            end
           end
         end)
     end
