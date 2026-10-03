@@ -1,164 +1,171 @@
-# Kcal — Cálculo Nutricional de Receitas e Refeições
+<p align="center">
+  <img src="priv/static/images/logo.png" alt="Kcal Logo" width="130" />
+</p>
 
-Aplicação web (Elixir · Phoenix · LiveView · Ecto · PostgreSQL) para montar
-**Componentes** (receitas/refeições) a partir de alimentos base das tabelas
-**TACO** e **TBCA**, calcular seus macros e gerar uma **Tabela Nutricional no
-padrão Anvisa** exportável como imagem.
+<h1 align="center">Kcal</h1>
 
-Sem login, sem autenticação, sem controle de peso: o usuário cai direto na tela
-principal de criação e listagem de componentes.
+<p align="center">
+  <b>Cálculo Nutricional de Receitas & Gerador de Rótulos no Padrão Anvisa</b>
+  <br />
+  Monte refeições a partir das tabelas oficiais TACO/TBCA, aninhe preparações e gere tabelas nutricionais e selos frontais exportáveis.
+</p>
 
-Estilo **brutalista/minimalista**: cantos retos (`rounded-none`), sem sombras,
-sem gradientes. Beleza pelo espaçamento e tipografia.
+<p align="center">
+  <a href="https://kcal.fly.dev">
+    <img src="https://img.shields.io/badge/Demo-kcal.fly.dev-10b981?style=for-the-badge&logo=flydotio&logoColor=white" alt="Live Demo" />
+  </a>
+  <img src="https://img.shields.io/badge/Elixir-1.18-4B275F?style=for-the-badge&logo=elixir&logoColor=white" alt="Elixir" />
+  <img src="https://img.shields.io/badge/Phoenix-LiveView%201.1-FD4F00?style=for-the-badge&logo=phoenixframework&logoColor=white" alt="Phoenix LiveView" />
+  <img src="https://img.shields.io/badge/PostgreSQL-17-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Anvisa-RDC%20429%20%7C%20IN%2075-black?style=for-the-badge" alt="Anvisa Compliance" />
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" />
+</p>
 
----
-
-## Stack
-
-| Camada | Tecnologia |
-|---|---|
-| Linguagem / runtime | Elixir 1.18 / Erlang OTP 28 |
-| Web | Phoenix 1.8 + Phoenix LiveView 1.1 |
-| Dados | Ecto 3 + PostgreSQL |
-| CSS | Tailwind v4 (+ daisyUI, neutralizado para o visual brutalista) |
-| Export de imagem | `html2canvas` (client-side, via CDN) |
-
----
-
-## Como rodar
-
-Pré-requisitos: Elixir/Erlang, Node, e um PostgreSQL acessível em
-`localhost:5432` com usuário/senha `postgres`/`postgres` (ajuste em
-`config/dev.exs` se necessário). Via Docker:
-
-```bash
-docker run -d --name kcal-pg -p 5432:5432 \
-  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=postgres \
-  postgres:16-alpine
-```
-
-Então:
-
-```bash
-mix setup          # deps + cria/migra o banco + SEED (TACO/TBCA) + assets
-mix phx.server     # http://localhost:4000
-```
-
-`mix setup` já popula o banco com **8 unidades de medida** e **600 alimentos
-base** — a **tabela TACO completa** (596 alimentos, 4ª ed. NEPA/UNICAMP) mais
-um suplemento curado de industrializados da **TBCA**. Os dados vêm dos CSVs
-versionados em `priv/repo/data/` (`taco_alimentos.csv` + `taco_acidos_graxos.csv`,
-unidos pelo número do alimento), processados por `priv/repo/seeds.exs`.
-
-Opcional — dados de demonstração (cria "Frango com marinado oriental" e uma
-"Marmita fitness" que **aninha** o primeiro):
-
-```bash
-mix run priv/repo/sample_components.exs
-```
-
-Testes:
-
-```bash
-mix test           # cálculo puro + fluxo LiveView do builder
-```
+<p align="center">
+  <a href="https://kcal.fly.dev"><strong>🌐 Acesse a aplicação em produção &rarr;</strong></a>
+</p>
 
 ---
 
-## Arquitetura
+## 🥗 Visão Geral
+
+**Kcal** é uma plataforma focada em precisão e simplicidade para cálculo e rotulagem nutricional de alimentos, receitas e marmitas. Desenvolvido para cozinhas profissionais, nutricionistas e entusiastas, o sistema permite compor **Componentes** alimentares a partir de uma base com **cerca de 600 alimentos oficiais (TACO 4ª edição e TBCA)**, agregando macros e micronutrientes com total fidelidade à legislação brasileira de rotulagem (**RDC 429/2020** e **IN 75/2020**).
+
+A interface segue uma estética **brutalista e minimalista** (bordas pretas sólidas, cantos retos, alto contraste e tipografia direta), sem fricções: sem telas de login ou cadastros lentos, com busca dinâmica instantânea e exportação dos rótulos prontos em imagem PNG.
+
+---
+
+## 🏷️ Conformidade Completa com a Anvisa
+
+O sistema implementa rigorosamente as normas vigentes da Anvisa para rotulagem de alimentos embalados:
+
+### 1. Cinco Modelos Oficiais de Tabela (Anexo IX e XIII)
+Alterne entre todos os layouts previstos por norma para caber em qualquer formato de embalagem:
+- **Vertical Padrão:** Layout clássico de coluna única com 100 g, porção e %VD.
+- **Vertical Quebrada:** Formato vertical dividido em duas colunas para economia de altura.
+- **Horizontal:** Formato em linhas largas, ideal para fundos de caixas e pacotes compridos.
+- **Horizontal Quebrada:** Formato horizontal particionado para embalagens com pouco espaço vertical.
+- **Linear (Anexo XIII):** Formato em texto contínuo corrido, reservado para embalagens cuja área visível de rotulagem seja menor que 100 cm².
+
+### 2. Rotulagem Nutricional Frontal ("ALTO EM" — Anexo XVII)
+- Exibição automática do selo da **Lupa Oficial da Anvisa** quando os limites críticos são ultrapassados:
+  - **Gordura Saturada:** $\ge 6\text{ g} / 100\text{ g}$
+  - **Sódio:** $\ge 600\text{ mg} / 100\text{ g}$
+- Malha construtiva responsiva que renderiza o formato correto (1, 2 ou 3 alertas combinados).
+
+### 3. Declaração Legal de Ingredientes
+- Geração automática da linha *"Ingredientes: Item A, Item B e Item C."* disposta estritamente em **ordem decrescente de peso/quantidade**.
+- Tratamento automático de descrições da base TACO (ex.: `"Queijo, cru"` é normalizado para evitar que pareçam dois ingredientes separados na lista).
+
+### 4. Ordem Estrita dos Nutrientes
+Valores por 100 g e por Porção com cálculo de %VD pelos Valores Diários de referência oficiais:
+> Valor Energético (kcal e kJ) &rarr; Carboidratos &rarr; Proteínas &rarr; Gorduras Totais &rarr; Gorduras Saturadas &rarr; Gorduras Trans &rarr; Fibras Alimentares &rarr; Sódio
+
+---
+
+## 🧮 Motor de Cálculo & Aninhamento Recursivo
+
+- **Aninhamento Real:** Uma receita pronta (ex.: *"Frango com Marinado Oriental"*) pode ser usada diretamente como ingrediente de outra preparação (ex.: *"Marmita Fit Completa"*).
+- **Cálculo Proporcional de Fração de Massa:** O sistema calcula o peso final e distribui o perfil nutricional proporcionalmente à massa utilizada na receita mãe.
+- **Proteção contra Ciclos:** Algoritmo que previne dependências circulares (A &rarr; B &rarr; A).
+- **Conversão de Medidas:** Suporte a unidades de massa (g, kg), volume (ml, l, colher de chá, colher de sopa, xícara) e unidades com peso configurável.
+- **Busca Sem Acento e Trigramas:** O picker de ingredientes utiliza `unaccent` e similaridade com `pg_trgm`, permitindo buscar "acucar" e encontrar "Açúcar" instantaneamente.
+
+---
+
+## 🛠️ Stack Tecnológica
+
+- **Backend / Runtime:** [Elixir 1.18](https://elixir-lang.org/) / Erlang OTP 28
+- **Framework Web:** [Phoenix Framework 1.8](https://www.phoenixframework.org/)
+- **Tempo Real & UI Reativa:** [Phoenix LiveView 1.1](https://hexdocs.pm/phoenix_live_view/)
+- **Banco de Dados:** [PostgreSQL 17](https://www.postgresql.org/) com extensões `pg_trgm` e `unaccent`
+- **ORM / Migrations:** [Ecto 3.13](https://hexdocs.pm/ecto/)
+- **Estilização:** [Tailwind CSS](https://tailwindcss.com/) & [daisyUI](https://daisyui.com/)
+- **Exportação Gráfica:** `html2canvas` (rasterização de alta precisão no client-side para copiar ou baixar PNG)
+- **Infraestrutura:** Docker & [Fly.io](https://fly.io)
+
+---
+
+## 📂 Arquitetura da Aplicação
 
 ```
 lib/kcal/nutrition/            CONTEXTO DE DOMÍNIO
 ├── food.ex                     Alimento base (TACO/TBCA), nutrientes por 100 g
-├── measure_unit.ex             Unidade de medida (g, ml, colher…, unidade)
+├── measure_unit.ex             Unidade de medida (g, ml, colheres, xícara, unidade)
 ├── component.ex                Componente (receita/refeição) + has_many :items
 ├── component_item.ex           Linha: aponta p/ food XOR child_component (aninhamento)
-├── nutrients.ex                Value object: struct + add/scale/sum (ordem Anvisa)
-└── calculator.ex               Matemática pura: conversão + agregação aninhada
-lib/kcal/nutrition.ex          API pública do contexto (CRUD, busca, relatório)
+├── nutrients.ex                Value object: struct de nutrientes + somas e escalas
+├── calculator.ex               Matemática pura: conversão de unidades + agregação
+└── release.ex                  Tarefas de migração e seeding para releases de produção
+lib/kcal/nutrition.ex          API pública do contexto (CRUD, busca e relatórios)
 
 lib/kcal_web/
-├── components/nutrition_components.ex   <.nutrition_facts> — rótulo Anvisa
-├── components/core_components.ex        + header_bar/1, brutal_link/1 (brutalismo)
+├── components/nutrition_components.ex   <.nutrition_facts_*> — 5 modelos Anvisa + Alertas
+├── components/core_components.ex        Componentes UI brutalistas
 └── live/component_live/
-    ├── index.ex               Dashboard (lista + filtro dinâmico)
-    ├── form.ex                Builder (busca dinâmica, medidas, aninhamento, preview)
-    └── show.ex                Detalhe + tabela Anvisa + exportar imagem
-
-assets/js/hooks/nutrition_export.js      Hook html2canvas (baixar / copiar PNG)
+    ├── index.ex               Dashboard de receitas com filtro em tempo real
+    ├── form.ex                Builder interativo com preview ao vivo
+    └── show.ex                Visualização completa + seleção de modelos + exportação PNG
 ```
-
-### 1) Modelagem do banco (Schemas Ecto)
-
-Quatro tabelas. O aninhamento usa uma **tabela de junção self-referencing**
-(`component_items`), e não uma coluna `parent_id` no próprio componente —
-isso permite que a mesma linha referencie **ou** um alimento base **ou** outro
-componente, com quantidade e unidade próprias.
-
-```
-foods (TACO/TBCA, valores por 100 g)
-  energy_kcal, carbohydrate_g, protein_g, total_fat_g,
-  saturated_fat_g, trans_fat_g, fiber_g, sodium_mg
-
-measure_units
-  name, abbreviation, grams_per_unit (nil p/ "unidade"), kind(mass|volume|count)
-
-components (receita/refeição)
-  name, description, serving_size_g, servings_label
-
-component_items  ── pertence a um component (pai)
-  quantity, grams_per_unit_override, position
-  food_id           ─┐ exatamente UM dos dois
-  child_component_id ─┘ (CHECK xor no banco)
-  measure_unit_id
-```
-
-Integridade garantida no banco por **check constraints**:
-`(food_id IS NULL) <> (child_component_id IS NULL)` (exatamente um alvo) e
-`child_component_id <> component_id` (sem auto-referência direta). Ciclos
-indiretos (A→B→A) são barrados no contexto (`reject_cycles/2` + `descendant?/2`).
-
-### 2) O motor de cálculo (`Calculator`)
-
-Toda linha vira **gramas** e depois um perfil absoluto de nutrientes:
-
-- **Alimento base:** `perfil_por_100g × (gramas / 100)`.
-- **Componente aninhado:** perfil absoluto do filho × `(gramas / peso_total_do_filho)`
-  — ou seja, uma **fração de massa** da receita-filha. Assim, 200 g de um
-  componente cujo preparo total pesa 200 g contribui com 100% dos seus macros.
-
-Conversão de medida: `gramas = quantidade × (override_da_linha ou grams_per_unit)`.
-"Unidade" não tem grama padrão (`grams_per_unit: nil`), então o builder pede o
-"g por unidade" quando essa medida é escolhida.
-
-A recursão de aninhamento é dirigida por um *loader* (mantém o módulo livre de
-`Repo`) e protegida por um conjunto `visited` contra ciclos.
-
-### 3) Tabela Nutricional (padrão Anvisa)
-
-`<.nutrition_facts>` (`nutrition_components.ex`) renderiza HTML limpo com a
-**ordem estrita** exigida (RDC 429/2020 + IN 75/2020):
-
-> Valor energético → Carboidratos → Proteínas → Gorduras totais →
-> Gorduras saturadas → Gorduras trans → Fibra alimentar → Sódio
-
-Duas colunas (**100 g** e **porção**) + coluna **%VD** calculada sobre a porção,
-usando os Valores Diários de referência da IN 75/2020. Energia mostrada em
-`kcal` e `kJ`. Visual brutalista (bordas pretas grossas, cantos retos).
-
-O elemento da tabela carrega `data-export-target`; o hook `NutritionExport`
-(`html2canvas`) rasteriza em PNG para **Baixar imagem** ou **Copiar imagem**
-(com fallback para download quando a área de transferência não aceita imagens).
-
-> ⚠️ Os valores nutricionais (TACO 4ª ed. NEPA/UNICAMP e TBCA/USP-FoRC) são
-> aproximados e de uso educacional. Açúcares totais/adicionados não são
-> modelados (não estão no escopo dos campos pedidos).
 
 ---
 
-## Fluxo do builder (LiveView)
+## 🚀 Como Executar Localmente
 
-A lista de ingredientes vive em **estado do servidor** (`@items`), não nos
-params do formulário — por isso a busca, a adição e a edição são instantâneas e
-o rótulo Anvisa à direita é recalculado a cada mudança (pré-visualização ao
-vivo). A busca é trigram-indexada (`pg_trgm`) para filtrar a base em tempo real.
+### Pré-requisitos
+- Elixir 1.15+ e Erlang/OTP 26+
+- PostgreSQL rodando localmente (porta 5432, padrão `postgres`/`postgres`)
+
+Via Docker:
+```bash
+docker run -d --name kcal-postgres -p 5432:5432 \
+  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=kcal_dev \
+  postgres:17-alpine
+```
+
+### Inicialização
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/hjunior29/kcal.git
+cd kcal
+
+# 2. Instale dependências, crie o banco, rode as migrations e popule o seed oficial TACO
+mix setup
+
+# 3. Inicie o servidor
+mix phx.server
+```
+
+Acesse [`http://localhost:4000`](http://localhost:4000) no navegador.
+
+Para carregar receitas de exemplo prontas (Marmita com itens aninhados):
+```bash
+mix run priv/repo/sample_components.exs
+```
+
+Para rodar os testes unitários e de integração:
+```bash
+mix test
+```
+
+---
+
+## ☁️ Deploy no Fly.io
+
+O repositório já inclui configuração completa para deploy automatizado:
+- [`fly.toml`](fly.toml): Configuração de máquina com autostop/autostart e cluster regional (`gru`).
+- [`Dockerfile`](Dockerfile): Build multi-stage seguro baseado em Debian Slim.
+- [`rel/overlays/bin/migrate`](rel/overlays/bin/migrate): Roda automaticamente as migrações e o seed de dados antes de iniciar o servidor.
+
+Para fazer deploy manual pelo CLI do Fly:
+```bash
+fly deploy --remote-only -a kcal
+```
+
+---
+
+<p align="center">
+  Desenvolvido por <a href="https://github.com/hjunior29">Helder Lima (@hjunior29)</a>
+</p>
