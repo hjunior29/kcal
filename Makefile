@@ -3,12 +3,9 @@
 
 .DEFAULT_GOAL := help
 .PHONY: help setup deps run server iex \
-        db.up db.create db.migrate db.reset db.seed sample \
+        db.create db.migrate db.reset db.seed sample \
         test test.watch check format format.check lint \
         assets.build assets.deploy precommit clean
-
-# Container Postgres compartilhado (porta 5432) — não suba um segundo.
-PG_CONTAINER ?= nutri-codex-postgres-1
 
 ## help: lista os alvos disponíveis
 help:
@@ -18,7 +15,7 @@ help:
 # --- setup -----------------------------------------------------------------
 
 ## setup: instala deps, prepara assets, cria/migra o banco e roda o seed
-setup: db.up
+setup:
 	mix setup
 
 ## deps: baixa as dependências do projeto
@@ -28,50 +25,46 @@ deps:
 # --- run -------------------------------------------------------------------
 
 ## run: sobe o servidor Phoenix (http://localhost:4000)
-run: db.up
+run:
 	mix phx.server
 
 ## server: alias de `run`
 server: run
 
 ## iex: sobe o servidor dentro de um IEx interativo
-iex: db.up
+iex:
 	iex -S mix phx.server
 
-# --- banco de dados --------------------------------------------------------
-
-## db.up: garante que o container Postgres compartilhado está rodando
-db.up:
-	@docker start $(PG_CONTAINER) >/dev/null 2>&1 || true
+# --- banco de dados (SQLite) -----------------------------------------------
 
 ## db.create: cria os bancos (dev/test)
-db.create: db.up
+db.create:
 	mix ecto.create
 
 ## db.migrate: aplica as migrations pendentes
-db.migrate: db.up
+db.migrate:
 	mix ecto.migrate
 
 ## db.seed: popula alimentos TACO/TBCA e unidades de medida
-db.seed: db.up
+db.seed:
 	mix run priv/repo/seeds.exs
 
 ## sample: insere componentes de exemplo (Marmita aninhada etc.)
-sample: db.up
+sample:
 	mix run priv/repo/sample_components.exs
 
 ## db.reset: derruba, recria, migra e roda o seed do zero
-db.reset: db.up
+db.reset:
 	mix ecto.reset
 
 # --- testes & qualidade ----------------------------------------------------
 
 ## test: roda a suíte de testes
-test: db.up
+test:
 	mix test
 
 ## check: compila com warnings-as-errors, format e testes (igual ao pre-commit)
-check: db.up
+check:
 	mix precommit
 
 ## format: formata o código
@@ -97,4 +90,4 @@ assets.deploy:
 ## clean: remove artefatos de build
 clean:
 	mix clean
-	rm -rf _build deps
+	rm -rf _build deps *.db*

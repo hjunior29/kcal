@@ -19,15 +19,5 @@ defmodule Kcal.Repo.Migrations.CreateComponentItems do
     create index(:component_items, [:food_id])
     create index(:component_items, [:child_component_id])
     create index(:component_items, [:measure_unit_id])
-
-    # A line references a base food XOR a nested component — exactly one.
-    create constraint(:component_items, :component_items_food_xor_component,
-             check: "(food_id IS NULL) <> (child_component_id IS NULL)"
-           )
-
-    # A component can never directly contain itself.
-    create constraint(:component_items, :component_items_no_self_reference,
-             check: "child_component_id IS NULL OR child_component_id <> component_id"
-           )
   end
 end

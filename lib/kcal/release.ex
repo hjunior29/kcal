@@ -23,8 +23,13 @@ defmodule Kcal.Release do
           if File.exists?(seeds_file) do
             IO.puts("Running seed script #{seeds_file}...")
             Code.eval_file(seeds_file)
-          else
-            IO.puts("Seed file #{seeds_file} not found, skipping.")
+          end
+
+          sample_file = Path.join(:code.priv_dir(@app), "repo/sample_components.exs")
+
+          if File.exists?(sample_file) do
+            IO.puts("Running sample components #{sample_file}...")
+            Code.eval_file(sample_file)
           end
         end)
     end

@@ -4,6 +4,7 @@ defmodule Kcal.Repo.Migrations.CreateFoods do
   def change do
     create table(:foods) do
       add :name, :string, null: false
+      add :search_name, :string
       add :category, :string
       add :source, :string, null: false, default: "TACO"
       add :source_code, :string
@@ -20,15 +21,8 @@ defmodule Kcal.Repo.Migrations.CreateFoods do
       timestamps(type: :utc_datetime)
     end
 
-    # Fast prefix/substring search powered by trigram index (see search in context).
-    execute "CREATE EXTENSION IF NOT EXISTS pg_trgm", "DROP EXTENSION IF EXISTS pg_trgm"
-
     create index(:foods, [:name])
+    create index(:foods, [:search_name])
     create index(:foods, [:category])
-
-    execute(
-      "CREATE INDEX foods_name_trgm_idx ON foods USING gin (name gin_trgm_ops)",
-      "DROP INDEX foods_name_trgm_idx"
-    )
   end
 end

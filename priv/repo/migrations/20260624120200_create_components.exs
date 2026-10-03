@@ -4,6 +4,7 @@ defmodule Kcal.Repo.Migrations.CreateComponents do
   def change do
     create table(:components) do
       add :name, :string, null: false
+      add :search_name, :string
       add :description, :text
       add :serving_size_g, :float
       add :servings_label, :string
@@ -12,10 +13,6 @@ defmodule Kcal.Repo.Migrations.CreateComponents do
     end
 
     create index(:components, [:name])
-
-    execute(
-      "CREATE INDEX components_name_trgm_idx ON components USING gin (name gin_trgm_ops)",
-      "DROP INDEX components_name_trgm_idx"
-    )
+    create index(:components, [:search_name])
   end
 end

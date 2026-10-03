@@ -39,3 +39,8 @@ npm-debug.log
 .DS_Store
 *.DS_Store
 
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+

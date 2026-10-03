@@ -71,7 +71,7 @@ RUN mix release
 FROM ${RUNNER_IMAGE} AS final
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends libstdc++6 openssl libncurses6 locales ca-certificates \
+  && apt-get install -y --no-install-recommends libstdc++6 openssl libncurses6 locales ca-certificates sqlite3 \
   && rm -rf /var/lib/apt/lists/*
 
 # Set the locale
@@ -83,14 +83,11 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
 WORKDIR "/app"
-RUN chown nobody /app
 
 # set runner ENV
 ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
-COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/kcal ./
-
-USER nobody
+COPY --from=builder /app/_build/${MIX_ENV}/rel/kcal ./
 
 CMD ["/app/bin/server"]

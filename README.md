@@ -16,7 +16,7 @@
   </a>
   <img src="https://img.shields.io/badge/Elixir-1.18-4B275F?style=for-the-badge&logo=elixir&logoColor=white" alt="Elixir" />
   <img src="https://img.shields.io/badge/Phoenix-LiveView%201.1-FD4F00?style=for-the-badge&logo=phoenixframework&logoColor=white" alt="Phoenix LiveView" />
-  <img src="https://img.shields.io/badge/PostgreSQL-17-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite 3" />
   <img src="https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/Anvisa-RDC%20429%20%7C%20IN%2075-black?style=for-the-badge" alt="Anvisa Compliance" />
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" />
@@ -33,6 +33,8 @@
 **Kcal** é uma plataforma focada em precisão e simplicidade para cálculo e rotulagem nutricional de alimentos, receitas e marmitas. Desenvolvido para cozinhas profissionais, nutricionistas e entusiastas, o sistema permite compor **Componentes** alimentares a partir de uma base com **cerca de 600 alimentos oficiais (TACO 4ª edição e TBCA)**, agregando macros e micronutrientes com total fidelidade à legislação brasileira de rotulagem (**RDC 429/2020** e **IN 75/2020**).
 
 A interface segue uma estética **brutalista e minimalista** (bordas pretas sólidas, cantos retos, alto contraste e tipografia direta), sem fricções: sem telas de login ou cadastros lentos, com busca dinâmica instantânea e exportação dos rótulos prontos em imagem PNG.
+
+O armazenamento utiliza **SQLite embarcado** no mesmo contêiner (com WAL mode habilitado), eliminando dependências de servidores de banco externos e permitindo cold starts instantâneos e custo mínimo em instâncias de nuvem.
 
 ---
 
@@ -70,7 +72,7 @@ Valores por 100 g e por Porção com cálculo de %VD pelos Valores Diários de r
 - **Cálculo Proporcional de Fração de Massa:** O sistema calcula o peso final e distribui o perfil nutricional proporcionalmente à massa utilizada na receita mãe.
 - **Proteção contra Ciclos:** Algoritmo que previne dependências circulares (A &rarr; B &rarr; A).
 - **Conversão de Medidas:** Suporte a unidades de massa (g, kg), volume (ml, l, colher de chá, colher de sopa, xícara) e unidades com peso configurável.
-- **Busca Sem Acento e Trigramas:** O picker de ingredientes utiliza `unaccent` e similaridade com `pg_trgm`, permitindo buscar "acucar" e encontrar "Açúcar" instantaneamente.
+- **Busca Sem Acento Otimizada:** O seletor de ingredientes normaliza diacríticos e acentos via Unicode NFD (`search_name`), permitindo buscar "acucar" e encontrar "Açúcar" instantaneamente com priorização de prefixo.
 
 ---
 
@@ -79,11 +81,11 @@ Valores por 100 g e por Porção com cálculo de %VD pelos Valores Diários de r
 - **Backend / Runtime:** [Elixir 1.18](https://elixir-lang.org/) / Erlang OTP 28
 - **Framework Web:** [Phoenix Framework 1.8](https://www.phoenixframework.org/)
 - **Tempo Real & UI Reativa:** [Phoenix LiveView 1.1](https://hexdocs.pm/phoenix_live_view/)
-- **Banco de Dados:** [PostgreSQL 17](https://www.postgresql.org/) com extensões `pg_trgm` e `unaccent`
-- **ORM / Migrations:** [Ecto 3.13](https://hexdocs.pm/ecto/)
+- **Banco de Dados:** [SQLite 3](https://www.sqlite.org/) (em contêiner com modo WAL e volume persistente `/data`)
+- **ORM / Migrations:** [Ecto 3.14](https://hexdocs.pm/ecto/) com [`ecto_sqlite3`](https://hexdocs.pm/ecto_sqlite3)
 - **Estilização:** [Tailwind CSS](https://tailwindcss.com/) & [daisyUI](https://daisyui.com/)
 - **Exportação Gráfica:** `html2canvas` (rasterização de alta precisão no client-side para copiar ou baixar PNG)
-- **Infraestrutura:** Docker & [Fly.io](https://fly.io)
+- **Infraestrutura:** Docker & [Fly.io](https://fly.io) com auto-stop e auto-start em ~1s.
 
 ---
 
@@ -113,16 +115,10 @@ lib/kcal_web/
 
 ## 🚀 Como Executar Localmente
 
+Zero dependências de bancos externos como Postgres ou MySQL — o SQLite cuida de tudo localmente.
+
 ### Pré-requisitos
 - Elixir 1.15+ e Erlang/OTP 26+
-- PostgreSQL rodando localmente (porta 5432, padrão `postgres`/`postgres`)
-
-Via Docker:
-```bash
-docker run -d --name kcal-postgres -p 5432:5432 \
-  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=kcal_dev \
-  postgres:17-alpine
-```
 
 ### Inicialização
 
@@ -131,7 +127,7 @@ docker run -d --name kcal-postgres -p 5432:5432 \
 git clone https://github.com/hjunior29/kcal.git
 cd kcal
 
-# 2. Instale dependências, crie o banco, rode as migrations e popule o seed oficial TACO
+# 2. Instale dependências, crie o banco SQLite, rode as migrations e popule o seed oficial TACO
 mix setup
 
 # 3. Inicie o servidor
@@ -152,15 +148,18 @@ mix test
 
 ---
 
-## ☁️ Deploy no Fly.io
+## ☁️ Deploy no Fly.io (SQLite + Volume Persistente)
 
-O repositório já inclui configuração completa para deploy automatizado:
-- [`fly.toml`](fly.toml): Configuração de máquina com autostop/autostart e cluster regional (`gru`).
-- [`Dockerfile`](Dockerfile): Build multi-stage seguro baseado em Debian Slim.
-- [`rel/overlays/bin/migrate`](rel/overlays/bin/migrate): Roda automaticamente as migrações e o seed de dados antes de iniciar o servidor.
+Seguindo o padrão de arquitetura autônoma no Fly.io:
+- O banco SQLite reside em `/data/kcal.db`, persistido em um volume dedicado `kcal_data`.
+- A máquina desliga automaticamente quando inativa (`auto_stop_machines = "stop"`) e acorda na primeira requisição em ~1s.
+- Não há deadlocks de DNS interno ou dependência de máquinas Postgres separadas.
 
-Para fazer deploy manual pelo CLI do Fly:
 ```bash
+# Criar volume persistente de 1GB (apenas na 1ª vez)
+fly volumes create kcal_data -a kcal -r gru -s 1 --yes
+
+# Deploy do release com migrations e seeds automáticos
 fly deploy --remote-only -a kcal
 ```
 

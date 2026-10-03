@@ -15,6 +15,7 @@ defmodule Kcal.Nutrition.Food do
 
   schema "foods" do
     field :name, :string
+    field :search_name, :string
     field :category, :string
     field :source, :string, default: "TACO"
     # External reference code in the source table (e.g. TACO id), for traceability.
@@ -51,6 +52,27 @@ defmodule Kcal.Nutrition.Food do
     |> validate_required([:name, :source])
     |> validate_inclusion(:source, @sources)
     |> validate_nutrients_non_negative()
+    |> put_search_name()
+  end
+
+  defp put_search_name(changeset) do
+    case get_change(changeset, :name) do
+      nil ->
+        case get_field(changeset, :name) do
+          nil ->
+            changeset
+
+          name ->
+            if get_field(changeset, :search_name) == nil do
+              put_change(changeset, :search_name, Kcal.Nutrition.normalize_search(name))
+            else
+              changeset
+            end
+        end
+
+      name ->
+        put_change(changeset, :search_name, Kcal.Nutrition.normalize_search(name))
+    end
   end
 
   defp validate_nutrients_non_negative(changeset) do

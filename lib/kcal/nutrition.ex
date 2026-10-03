@@ -40,18 +40,19 @@ defmodule Kcal.Nutrition do
   Empty term returns a small alphabetical sample so the list is never blank.
   """
   def search_foods(term, limit \\ 20) do
-    case normalize(term) do
+    case normalize_search(term) do
       "" ->
         Repo.all(from f in Food, order_by: [asc: f.name], limit: ^limit)
 
       t ->
         pattern = "%#{escape_like(t)}%"
+        prefix = "#{escape_like(t)}%"
 
         Repo.all(
           from f in Food,
-            where: ilike(fragment("unaccent(?)", f.name), fragment("unaccent(?)", ^pattern)),
+            where: like(f.search_name, ^pattern),
             order_by: [
-              desc: fragment("similarity(unaccent(?), unaccent(?))", f.name, ^t),
+              asc: fragment("CASE WHEN search_name LIKE ? THEN 0 ELSE 1 END", ^prefix),
               asc: f.name
             ],
             limit: ^limit
@@ -85,18 +86,19 @@ defmodule Kcal.Nutrition do
     base = from c in Component, limit: ^limit
     base = if exclude_id, do: from(c in base, where: c.id != ^exclude_id), else: base
 
-    case normalize(term) do
+    case normalize_search(term) do
       "" ->
         Repo.all(from c in base, order_by: [desc: c.updated_at])
 
       t ->
         pattern = "%#{escape_like(t)}%"
+        prefix = "#{escape_like(t)}%"
 
         Repo.all(
           from c in base,
-            where: ilike(fragment("unaccent(?)", c.name), fragment("unaccent(?)", ^pattern)),
+            where: like(c.search_name, ^pattern),
             order_by: [
-              desc: fragment("similarity(unaccent(?), unaccent(?))", c.name, ^t),
+              asc: fragment("CASE WHEN search_name LIKE ? THEN 0 ELSE 1 END", ^prefix),
               asc: c.name
             ]
         )
@@ -129,18 +131,24 @@ defmodule Kcal.Nutrition do
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a component. Returns `{:error, changeset}` (instead of raising) when
-  the component is still nested inside another (the `on_delete: :restrict` FK).
-  """
   def delete_component(%Component{} = component) do
-    component
-    |> Ecto.Changeset.change()
-    |> Ecto.Changeset.foreign_key_constraint(:child_component_id,
-      name: :component_items_child_component_id_fkey,
-      message: "este componente está sendo usado em outro e não pode ser excluído"
-    )
-    |> Repo.delete()
+    if is_used_as_child?(component.id) do
+      changeset =
+        component
+        |> Ecto.Changeset.change()
+        |> Ecto.Changeset.add_error(
+          :child_component_id,
+          "este componente está sendo usado em outro e não pode ser excluído"
+        )
+
+      {:error, changeset}
+    else
+      Repo.delete(component)
+    end
+  end
+
+  defp is_used_as_child?(component_id) do
+    Repo.exists?(from i in "component_items", where: i.child_component_id == ^component_id)
   end
 
   # --- Reporting -----------------------------------------------------------
@@ -232,8 +240,18 @@ defmodule Kcal.Nutrition do
     end
   end
 
-  defp normalize(nil), do: ""
-  defp normalize(term), do: String.trim(term)
+  @doc "Normalizes text for search (lowercased, accents stripped, trimmed)."
+  def normalize_search(nil), do: ""
+
+  def normalize_search(term) when is_binary(term) do
+    term
+    |> :unicode.characters_to_nfd_binary()
+    |> String.replace(~r/\p{Mn}/u, "")
+    |> String.downcase()
+    |> String.trim()
+  end
+
+  def normalize_search(_), do: ""
 
   defp escape_like(term), do: String.replace(term, ~r/([%_\\])/, "\\\\\\1")
 end

@@ -17,6 +17,7 @@ defmodule Kcal.Nutrition.Component do
 
   schema "components" do
     field :name, :string
+    field :search_name, :string
     field :description, :string
     field :serving_size_g, :float
     field :servings_label, :string
@@ -36,10 +37,31 @@ defmodule Kcal.Nutrition.Component do
     |> validate_required([:name])
     |> validate_length(:name, min: 2, max: 160)
     |> validate_number(:serving_size_g, greater_than: 0)
+    |> put_search_name()
     |> cast_assoc(:items,
       sort_param: :items_sort,
       drop_param: :items_drop,
       with: &ComponentItem.changeset/2
     )
+  end
+
+  defp put_search_name(changeset) do
+    case get_change(changeset, :name) do
+      nil ->
+        case get_field(changeset, :name) do
+          nil ->
+            changeset
+
+          name ->
+            if get_field(changeset, :search_name) == nil do
+              put_change(changeset, :search_name, Kcal.Nutrition.normalize_search(name))
+            else
+              changeset
+            end
+        end
+
+      name ->
+        put_change(changeset, :search_name, Kcal.Nutrition.normalize_search(name))
+    end
   end
 end
