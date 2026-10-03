@@ -112,6 +112,7 @@ defmodule KcalWeb.NutritionComponents do
       |> assign(:warnings, front_warnings(assigns.report))
       |> assign(:info_alerts, info_alerts(assigns.report))
       |> assign(:ingredients, ingredient_names_desc(assigns.report))
+      |> assign(:ingredients_text, ingredient_declaration(assigns.report))
 
     ~H"""
     <div data-export-target class={[nutrition_label_class(), "w-full max-w-md", @class]}>
@@ -144,8 +145,7 @@ defmodule KcalWeb.NutritionComponents do
         :if={@show_ingredients and @ingredients != []}
         class="border-t-[3px] border-black px-3 py-2 text-[11px] leading-snug"
       >
-        <span class="font-bold uppercase">Ingredientes:</span>
-        {Enum.join(@ingredients, ", ")}.
+        <span class="font-bold uppercase">Ingredientes:</span> {@ingredients_text}
       </div>
 
       <.footnote class="border-t-[3px] border-black" />
@@ -184,6 +184,55 @@ defmodule KcalWeb.NutritionComponents do
           </thead>
           <tbody>
             <.facts_rows rows={@rows} per_100g={@d.per_100g} per_portion={@d.per_portion} />
+          </tbody>
+        </table>
+      </div>
+      <.footnote class="border-t border-black" />
+    </div>
+    """
+  end
+
+  @doc """
+  The *horizontal quebrado* table model (Anexo IX, modelo 4): the title/portion
+  block on the left, then the value table split into two groups side by side
+  (carbs group | fats-and-beyond), footnote across the bottom.
+  """
+  attr :report, :map, required: true
+  attr :component, :map, required: true
+  attr :class, :string, default: nil
+
+  def nutrition_facts_horizontal_broken(assigns) do
+    assigns =
+      assigns
+      |> assign(:d, facts(assigns.component, assigns.report))
+      |> assign(:rows_a, rows_for(@rows_group_a))
+      |> assign(:rows_b, rows_for(@rows_group_b))
+
+    ~H"""
+    <div data-export-target class={[nutrition_label_class(), "w-full max-w-5xl", @class]}>
+      <div class="flex">
+        <div class="w-48 shrink-0 border-r border-black p-3">
+          <h2 class="text-lg font-extrabold uppercase leading-none">Informação<br />Nutricional</h2>
+          <div class="mt-2 border-t-[3px] border-black pt-2 text-[12px] leading-snug">
+            <p>Porções por emb.: <span class="font-bold">{@d.servings}</span></p>
+            <p>Porção: <span class="font-bold">{format_number(@d.portion_g, 0)} g</span></p>
+            <p :if={@d.servings_label not in [nil, ""]}>({@d.servings_label})</p>
+          </div>
+        </div>
+        <table class="flex-1 border-collapse text-[12px]">
+          <thead>
+            <.facts_head portion_g={@d.portion_g} />
+          </thead>
+          <tbody>
+            <.facts_rows rows={@rows_a} per_100g={@d.per_100g} per_portion={@d.per_portion} />
+          </tbody>
+        </table>
+        <table class="flex-1 border-collapse border-l border-black text-[12px]">
+          <thead>
+            <.facts_head portion_g={@d.portion_g} />
+          </thead>
+          <tbody>
+            <.facts_rows rows={@rows_b} per_100g={@d.per_100g} per_portion={@d.per_portion} />
           </tbody>
         </table>
       </div>
@@ -531,14 +580,54 @@ defmodule KcalWeb.NutritionComponents do
   Ingredient names in decreasing order of mass — the order Brazilian labelling
   requires for the ingredient declaration. Lines with no resolvable mass are
   dropped; duplicate names are collapsed keeping the heaviest occurrence first.
+  Each name is cleaned with `ingredient_label/1`.
   """
   def ingredient_names_desc(report) do
     report.result.lines
     |> Enum.filter(&(&1.grams > 0))
     |> Enum.sort_by(& &1.grams, :desc)
-    |> Enum.map(& &1.label)
+    |> Enum.map(&ingredient_label(&1.label))
     |> Enum.uniq()
   end
+
+  @doc """
+  Cleans a food/component name for display as a single ingredient. TACO uses an
+  inverted, comma-separated format ("Queijo, cru", "Frango, peito, sem pele")
+  that, joined into a list, reads as if each qualifier were its own ingredient.
+  We flatten the internal commas to spaces so "Queijo, cru" → "Queijo cru".
+  """
+  def ingredient_label(name) when is_binary(name) do
+    name
+    |> String.replace(~r/,\s*/u, " ")
+    |> String.replace(~r/\s+/u, " ")
+    |> String.trim()
+  end
+
+  def ingredient_label(name), do: name
+
+  @doc """
+  The Brazilian ingredient declaration sentence, in decreasing order of mass:
+  lower-cased names, the last joined with "e", first letter capitalized, ending
+  with a period — e.g. "Queijo cru, arroz integral e sal.". `""` when empty.
+  """
+  def ingredient_declaration(report) do
+    case report |> ingredient_names_desc() |> Enum.map(&String.downcase/1) do
+      [] -> ""
+      names -> names |> join_with_e() |> capitalize_first() |> Kernel.<>(".")
+    end
+  end
+
+  # Natural-language list join: "a", "a e b", "a, b e c".
+  defp join_with_e([only]), do: only
+  defp join_with_e([a, b]), do: "#{a} e #{b}"
+
+  defp join_with_e(list) do
+    {init, [last]} = Enum.split(list, -1)
+    "#{Enum.join(init, ", ")} e #{last}"
+  end
+
+  defp capitalize_first(""), do: ""
+  defp capitalize_first(<<first::utf8, rest::binary>>), do: String.upcase(<<first::utf8>>) <> rest
 
   # Common per-label data, computed once and shared by every table model.
   defp facts(component, report) do

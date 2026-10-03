@@ -49,8 +49,11 @@ defmodule Kcal.Nutrition do
 
         Repo.all(
           from f in Food,
-            where: ilike(f.name, ^pattern),
-            order_by: [desc: fragment("similarity(?, ?)", f.name, ^t), asc: f.name],
+            where: ilike(fragment("unaccent(?)", f.name), fragment("unaccent(?)", ^pattern)),
+            order_by: [
+              desc: fragment("similarity(unaccent(?), unaccent(?))", f.name, ^t),
+              asc: f.name
+            ],
             limit: ^limit
         )
     end
@@ -91,8 +94,11 @@ defmodule Kcal.Nutrition do
 
         Repo.all(
           from c in base,
-            where: ilike(c.name, ^pattern),
-            order_by: [desc: fragment("similarity(?, ?)", c.name, ^t), asc: c.name]
+            where: ilike(fragment("unaccent(?)", c.name), fragment("unaccent(?)", ^pattern)),
+            order_by: [
+              desc: fragment("similarity(unaccent(?), unaccent(?))", c.name, ^t),
+              asc: c.name
+            ]
         )
     end
   end
