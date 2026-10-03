@@ -303,7 +303,7 @@ defmodule KcalWeb.CalculatorLive do
     ~H"""
     <Layouts.app flash={@flash}>
       <%!-- One-shot notice banner --%>
-      <div class="mb-6 border-2 border-black bg-brand/50 p-3.5 text-xs sm:text-sm font-medium flex items-center justify-between gap-3">
+      <div class="mb-6 border-2 border-black bg-brand/50 p-3.5 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 text-black">
         <div class="flex items-center gap-2">
           <span class="text-base font-bold">⚠️</span>
           <span>
@@ -312,23 +312,23 @@ defmodule KcalWeb.CalculatorLive do
             <strong>Exporte sua tabela</strong> antes de sair.
           </span>
         </div>
-        <.link navigate={~p"/"} class="underline font-bold text-xs shrink-0 hover:opacity-75">
+        <.link navigate={~p"/"} class="underline font-bold text-xs shrink-0 hover:opacity-75 text-black">
           Sobre os Dados &rarr;
         </.link>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start text-black">
         <%!-- Left Column: Recipe Editor (3 cols) --%>
         <div class="lg:col-span-3 space-y-6">
           <%!-- 1. Recipe Identity --%>
-          <div class="border-2 border-black bg-white p-4">
-            <h3 class="font-bold uppercase tracking-wide text-xs border-b-2 border-black/15 pb-2 mb-3">
+          <div class="border-2 border-black bg-white p-4 text-black">
+            <h3 class="font-bold uppercase tracking-wide text-xs border-b-2 border-black/15 pb-2 mb-3 text-black">
               1. Identificação da Receita
             </h3>
 
             <form phx-change="update_recipe" class="space-y-3">
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wide mb-1">
+                <label class="block text-xs font-bold uppercase tracking-wide mb-1 text-black">
                   Nome da receita
                 </label>
                 <input
@@ -337,12 +337,12 @@ defmodule KcalWeb.CalculatorLive do
                   value={@recipe.name}
                   placeholder="Ex.: Marmita de Frango com Arroz"
                   autocomplete="off"
-                  class="w-full rounded-none border-2 border-black bg-white px-3 py-2 text-sm focus:outline-none focus:bg-brand"
+                  class="w-full rounded-none border-2 border-black bg-white text-black px-3 py-2 text-sm focus:outline-none focus:bg-brand"
                 />
               </div>
 
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wide mb-1">
+                <label class="block text-xs font-bold uppercase tracking-wide mb-1 text-black">
                   Descrição (opcional)
                 </label>
                 <input
@@ -351,13 +351,13 @@ defmodule KcalWeb.CalculatorLive do
                   value={@recipe.description}
                   placeholder="Ex.: Almoço fitness balanceado"
                   autocomplete="off"
-                  class="w-full rounded-none border-2 border-black bg-white px-3 py-2 text-sm focus:outline-none focus:bg-brand"
+                  class="w-full rounded-none border-2 border-black bg-white text-black px-3 py-2 text-sm focus:outline-none focus:bg-brand"
                 />
               </div>
 
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-xs font-bold uppercase tracking-wide mb-1">
+                  <label class="block text-xs font-bold uppercase tracking-wide mb-1 text-black">
                     Porção de consumo (g)
                   </label>
                   <input
@@ -367,11 +367,11 @@ defmodule KcalWeb.CalculatorLive do
                     name="recipe[serving_size_g]"
                     value={num_value(@recipe.serving_size_g)}
                     placeholder="ex.: 100"
-                    class="w-full rounded-none border-2 border-black bg-white px-3 py-2 text-sm focus:outline-none focus:bg-brand"
+                    class="w-full rounded-none border-2 border-black bg-white text-black px-3 py-2 text-sm focus:outline-none focus:bg-brand"
                   />
                 </div>
                 <div>
-                  <label class="block text-xs font-bold uppercase tracking-wide mb-1">
+                  <label class="block text-xs font-bold uppercase tracking-wide mb-1 text-black">
                     Medida caseira da porção
                   </label>
                   <input
@@ -380,7 +380,7 @@ defmodule KcalWeb.CalculatorLive do
                     value={@recipe.servings_label}
                     placeholder="ex.: 1 marmita, 1 fatia"
                     autocomplete="off"
-                    class="w-full rounded-none border-2 border-black bg-white px-3 py-2 text-sm focus:outline-none focus:bg-brand"
+                    class="w-full rounded-none border-2 border-black bg-white text-black px-3 py-2 text-sm focus:outline-none focus:bg-brand"
                   />
                 </div>
               </div>
@@ -388,7 +388,7 @@ defmodule KcalWeb.CalculatorLive do
           </div>
 
           <%!-- 2. Scientific Food Search (TACO / TBCA) --%>
-          <div class="border-2 border-black bg-white">
+          <div class="border-2 border-black bg-white text-black">
             <div class="bg-black text-white px-4 py-2 flex items-center justify-between">
               <h3 class="font-bold uppercase tracking-wide text-xs">
                 2. Banco de Alimentos (TACO / TBCA)
@@ -405,21 +405,21 @@ defmodule KcalWeb.CalculatorLive do
                   phx-debounce="100"
                   autocomplete="off"
                   placeholder="Buscar alimento (ex: frango, arroz, ovo, banana, aveia, azeite)..."
-                  class="w-full rounded-none border-2 border-black bg-white px-3 py-2 text-sm focus:outline-none focus:bg-brand"
+                  class="w-full rounded-none border-2 border-black bg-white text-black px-3 py-2 text-sm focus:outline-none focus:bg-brand"
                 />
               </form>
 
               <ul class="mt-2 max-h-64 overflow-auto divide-y divide-black/15 border-2 border-black/15">
-                <li :if={@results == []} class="px-3 py-4 text-xs opacity-60 text-center">
+                <li :if={@results == []} class="px-3 py-4 text-xs opacity-60 text-center text-black">
                   Nenhum alimento encontrado para "{@query}".
                 </li>
                 <li
                   :for={r <- @results}
-                  class="flex items-center justify-between gap-2 px-3 py-2 hover:bg-brand"
+                  class="flex items-center justify-between gap-2 px-3 py-2 hover:bg-brand text-black"
                 >
                   <div class="min-w-0">
-                    <p class="font-medium text-xs truncate">{r.name}</p>
-                    <p class="text-[10px] opacity-60 truncate">
+                    <p class="font-medium text-xs truncate text-black">{r.name}</p>
+                    <p class="text-[10px] opacity-60 truncate text-black">
                       {r.category || "Geral"} · {round(r.energy_kcal)} kcal/100g · {r.source}
                     </p>
                   </div>
@@ -427,7 +427,7 @@ defmodule KcalWeb.CalculatorLive do
                     type="button"
                     phx-click="add_food"
                     phx-value-id={r.id}
-                    class="shrink-0 rounded-none border-2 border-black bg-white px-2.5 py-1 text-xs font-bold hover:bg-black hover:text-white transition-colors"
+                    class="shrink-0 rounded-none border-2 border-black bg-white text-black px-2.5 py-1 text-xs font-bold hover:bg-black hover:text-white transition-colors"
                   >
                     + Adicionar
                   </button>
@@ -437,9 +437,9 @@ defmodule KcalWeb.CalculatorLive do
           </div>
 
           <%!-- 3. Recipe Ingredients List --%>
-          <div>
-            <div class="flex items-center justify-between border-b-2 border-black pb-1 mb-3">
-              <h3 class="font-bold uppercase tracking-wide text-xs">
+          <div class="text-black">
+            <div class="flex items-center justify-between border-b-2 border-black pb-1 mb-3 text-black">
+              <h3 class="font-bold uppercase tracking-wide text-xs text-black">
                 3. Ingredientes Adicionados ({length(@items)})
               </h3>
 
@@ -448,7 +448,7 @@ defmodule KcalWeb.CalculatorLive do
                   :if={@items == []}
                   type="button"
                   phx-click="load_sample"
-                  class="border border-black bg-brand px-2 py-0.5 text-[11px] font-bold uppercase hover:bg-black hover:text-white"
+                  class="border border-black bg-brand text-black px-2 py-0.5 text-[11px] font-bold uppercase hover:bg-black hover:text-white"
                 >
                   Carregar Exemplo
                 </button>
@@ -457,7 +457,7 @@ defmodule KcalWeb.CalculatorLive do
                   type="button"
                   phx-click="clear_recipe"
                   data-confirm="Deseja limpar todos os ingredientes desta receita?"
-                  class="border border-black bg-white px-2 py-0.5 text-[11px] font-bold uppercase hover:bg-red-600 hover:text-white hover:border-red-600"
+                  class="border border-black bg-white text-black px-2 py-0.5 text-[11px] font-bold uppercase hover:bg-red-600 hover:text-white hover:border-red-600"
                 >
                   Limpar
                 </button>
@@ -466,28 +466,28 @@ defmodule KcalWeb.CalculatorLive do
 
             <div
               :if={@items == []}
-              class="border-2 border-dashed border-black p-8 text-center bg-white space-y-2"
+              class="border-2 border-dashed border-black p-8 text-center bg-white text-black space-y-2"
             >
-              <p class="font-bold text-sm">Sua receita ainda não possui ingredientes.</p>
-              <p class="text-xs opacity-70 max-w-sm mx-auto">
+              <p class="font-bold text-sm text-black">Sua receita ainda não possui ingredientes.</p>
+              <p class="text-xs opacity-70 max-w-sm mx-auto text-black">
                 Busque alimentos acima e clique em <strong>+ Adicionar</strong> ou clique em
                 <strong>Carregar Exemplo</strong> para ver uma receita pré-montada.
               </p>
             </div>
 
             <ul class="space-y-2">
-              <li :for={item <- @items} class="border-2 border-black bg-white p-3">
+              <li :for={item <- @items} class="border-2 border-black bg-white text-black p-3">
                 <div class="flex items-start justify-between gap-2">
                   <div class="min-w-0">
-                    <p class="font-semibold text-xs truncate">{item.name}</p>
-                    <p class="text-[10px] opacity-60">{item.category}</p>
+                    <p class="font-semibold text-xs truncate text-black">{item.name}</p>
+                    <p class="text-[10px] opacity-60 text-black">{item.category}</p>
                   </div>
                   <button
                     type="button"
                     phx-click="remove_item"
                     phx-value-tid={item.temp_id}
                     title="Remover este ingrediente"
-                    class="shrink-0 border-2 border-black px-2 py-0.5 text-xs font-bold hover:bg-red-600 hover:text-white hover:border-red-600"
+                    class="shrink-0 border-2 border-black bg-white text-black px-2 py-0.5 text-xs font-bold hover:bg-red-600 hover:text-white hover:border-red-600"
                   >
                     ×
                   </button>
@@ -496,7 +496,7 @@ defmodule KcalWeb.CalculatorLive do
                 <form phx-change="update_item" phx-value-tid={item.temp_id} class="mt-2 space-y-2">
                   <div class="grid grid-cols-[1fr_1.5fr_auto] gap-2 items-end">
                     <div>
-                      <label class="block text-[10px] font-bold uppercase opacity-70">Qtd.</label>
+                      <label class="block text-[10px] font-bold uppercase opacity-70 text-black">Qtd.</label>
                       <input
                         type="number"
                         step="any"
@@ -504,14 +504,14 @@ defmodule KcalWeb.CalculatorLive do
                         name="quantity"
                         value={num_value(item.quantity)}
                         phx-debounce="100"
-                        class="w-full rounded-none border-2 border-black px-2 py-1 text-sm focus:outline-none focus:bg-brand"
+                        class="w-full rounded-none border-2 border-black bg-white text-black px-2 py-1 text-sm focus:outline-none focus:bg-brand"
                       />
                     </div>
                     <div>
-                      <label class="block text-[10px] font-bold uppercase opacity-70">Medida</label>
+                      <label class="block text-[10px] font-bold uppercase opacity-70 text-black">Medida</label>
                       <select
                         name="measure_unit_id"
-                        class="w-full rounded-none border-2 border-black px-2 py-1 text-sm bg-white focus:outline-none"
+                        class="w-full rounded-none border-2 border-black px-2 py-1 text-sm bg-white text-black focus:outline-none"
                       >
                         <option
                           :for={u <- @measure_units}
@@ -522,9 +522,9 @@ defmodule KcalWeb.CalculatorLive do
                         </option>
                       </select>
                     </div>
-                    <div class="text-right text-xs pb-1 tabular-nums w-20">
-                      <span class="block text-[9px] font-bold uppercase opacity-70">= g</span>
-                      <span class="font-bold">{grams_label(item, @measure_units)}</span>
+                    <div class="text-right text-xs pb-1 tabular-nums w-20 text-black">
+                      <span class="block text-[9px] font-bold uppercase opacity-70 text-black">= g</span>
+                      <span class="font-bold text-black">{grams_label(item, @measure_units)}</span>
                     </div>
                   </div>
 
@@ -540,7 +540,7 @@ defmodule KcalWeb.CalculatorLive do
                       value={num_value(item.grams_per_unit_override)}
                       phx-debounce="100"
                       placeholder="ex.: 50 (peso de 1 unidade)"
-                      class="w-full rounded-none border-2 border-red-600 px-2 py-1 text-xs focus:outline-none focus:bg-brand"
+                      class="w-full rounded-none border-2 border-red-600 px-2 py-1 text-xs bg-white text-black focus:outline-none focus:bg-brand"
                     />
                   </div>
                 </form>
@@ -549,11 +549,11 @@ defmodule KcalWeb.CalculatorLive do
           </div>
 
           <%!-- 4. Recipe Portability Tools (JSON Backup & Restore) --%>
-          <div class="border-2 border-black bg-white p-4 space-y-3">
-            <h4 class="font-bold uppercase tracking-wide text-xs">
+          <div class="border-2 border-black bg-white text-black p-4 space-y-3">
+            <h4 class="font-bold uppercase tracking-wide text-xs text-black">
               Salvar / Carregar Receita (Backup Local)
             </h4>
-            <p class="text-xs opacity-75">
+            <p class="text-xs opacity-75 text-black">
               Como não salvamos receitas no servidor, você pode baixar um arquivo <code>.json</code> no
               seu dispositivo para reabrir esta receita a qualquer momento:
             </p>
@@ -563,12 +563,12 @@ defmodule KcalWeb.CalculatorLive do
                 type="button"
                 phx-click="export_json"
                 disabled={@items == []}
-                class="border-2 border-black bg-white px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand disabled:opacity-50"
+                class="border-2 border-black bg-white text-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand disabled:opacity-50"
               >
                 💾 Baixar JSON da Receita
               </button>
 
-              <label class="border-2 border-black bg-white px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand cursor-pointer inline-flex items-center">
+              <label class="border-2 border-black bg-white text-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand cursor-pointer inline-flex items-center">
                 📂 Carregar JSON da Receita
                 <input
                   type="file"
@@ -583,20 +583,20 @@ defmodule KcalWeb.CalculatorLive do
         </div>
 
         <%!-- Right Column: Live ANVISA Nutrition Label & Export (2 cols) --%>
-        <div class="lg:col-span-2 lg:sticky lg:top-4 space-y-4">
-          <div class="border-2 border-black bg-white p-3 space-y-3">
-            <div class="flex items-center justify-between border-b-2 border-black/15 pb-2">
-              <h3 class="font-bold uppercase tracking-wide text-xs">
+        <div class="lg:col-span-2 lg:sticky lg:top-4 space-y-4 text-black">
+          <div class="border-2 border-black bg-white text-black p-3 space-y-3">
+            <div class="flex items-center justify-between border-b-2 border-black/15 pb-2 text-black">
+              <h3 class="font-bold uppercase tracking-wide text-xs text-black">
                 Tabela Nutricional ANVISA
               </h3>
-              <span class="text-[10px] font-bold uppercase bg-brand border border-black px-1.5 py-0.5">
+              <span class="text-[10px] font-bold uppercase bg-brand text-black border border-black px-1.5 py-0.5">
                 RDC 429/2020
               </span>
             </div>
 
             <%!-- Format Selector --%>
             <div>
-              <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">
+              <label class="block text-[10px] font-bold uppercase opacity-70 mb-1 text-black">
                 Modelo Oficial
               </label>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-1">
@@ -622,7 +622,7 @@ defmodule KcalWeb.CalculatorLive do
                 type="button"
                 data-export="download"
                 title="Baixar imagem em PNG de alta resolução"
-                class="flex-1 border-2 border-black bg-brand px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-colors text-center"
+                class="flex-1 border-2 border-black bg-brand text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-colors text-center"
               >
                 ⬇ Baixar PNG
               </button>
@@ -630,7 +630,7 @@ defmodule KcalWeb.CalculatorLive do
                 type="button"
                 data-export="copy"
                 title="Copiar imagem para colar no WhatsApp, Canva, etc"
-                class="border-2 border-black bg-white px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-brand transition-colors"
+                class="border-2 border-black bg-white text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-brand transition-colors"
               >
                 📋 Copiar
               </button>
@@ -638,7 +638,7 @@ defmodule KcalWeb.CalculatorLive do
                 type="button"
                 phx-click="trigger_print"
                 title="Imprimir ou Salvar em PDF"
-                class="border-2 border-black bg-white px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-brand transition-colors"
+                class="border-2 border-black bg-white text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-brand transition-colors"
               >
                 🖨 Imprimir / PDF
               </button>
@@ -651,7 +651,7 @@ defmodule KcalWeb.CalculatorLive do
             id="nutrition-export-wrapper"
             phx-hook="NutritionExport"
             data-filename={"#{sanitize_filename(@recipe.name)} - tabela nutricional"}
-            class="space-y-4"
+            class="space-y-4 text-black"
           >
             <%!-- Front-of-pack alerts (if thresholds exceeded) --%>
             <div :if={front_warnings(@report) != [] or info_alerts(@report) != []}>
@@ -689,26 +689,26 @@ defmodule KcalWeb.CalculatorLive do
           </div>
 
           <%!-- Mandatory Ingredients Declaration --%>
-          <div class="border-2 border-black bg-white p-3 space-y-2">
-            <h4 class="font-bold uppercase tracking-wide text-xs">
+          <div class="border-2 border-black bg-white text-black p-3 space-y-2">
+            <h4 class="font-bold uppercase tracking-wide text-xs text-black">
               Declaração de Ingredientes
             </h4>
-            <p :if={@ingredients_text != ""} class="text-xs leading-snug">
+            <p :if={@ingredients_text != ""} class="text-xs leading-snug text-black">
               <strong>Ingredientes:</strong> {@ingredients_text}
             </p>
-            <p :if={@ingredients_text == ""} class="text-xs opacity-60">
+            <p :if={@ingredients_text == ""} class="text-xs opacity-60 text-black">
               Adicione ingredientes para gerar a declaração em ordem decrescente de quantidade.
             </p>
           </div>
 
           <%!-- Per-ingredient Breakdown Table --%>
-          <div :if={@report.result.lines != []} class="border-2 border-black bg-white p-3 space-y-2">
-            <h4 class="font-bold uppercase tracking-wide text-xs">
+          <div :if={@report.result.lines != []} class="border-2 border-black bg-white text-black p-3 space-y-2">
+            <h4 class="font-bold uppercase tracking-wide text-xs text-black">
               Detalhamento de Insumos
             </h4>
-            <table class="w-full text-xs border-collapse">
+            <table class="w-full text-xs border-collapse text-black">
               <thead>
-                <tr class="border-b-2 border-black text-left font-bold">
+                <tr class="border-b-2 border-black text-left font-bold text-black">
                   <th class="py-1">Alimento</th>
                   <th class="py-1 text-right">Peso</th>
                   <th class="py-1 text-right">kcal</th>
@@ -717,15 +717,15 @@ defmodule KcalWeb.CalculatorLive do
               <tbody>
                 <tr
                   :for={line <- Enum.sort_by(@report.result.lines, & &1.grams, :desc)}
-                  class="border-b border-black/20"
+                  class="border-b border-black/20 text-black"
                 >
-                  <td class="py-1 truncate max-w-[140px]">{line.label}</td>
-                  <td class="py-1 text-right tabular-nums">{round(line.grams)} g</td>
-                  <td class="py-1 text-right tabular-nums">{round(line.nutrients.energy_kcal)}</td>
+                  <td class="py-1 truncate max-w-[140px] text-black">{line.label}</td>
+                  <td class="py-1 text-right tabular-nums text-black">{round(line.grams)} g</td>
+                  <td class="py-1 text-right tabular-nums text-black">{round(line.nutrients.energy_kcal)}</td>
                 </tr>
               </tbody>
               <tfoot>
-                <tr class="font-bold border-t-2 border-black">
+                <tr class="font-bold border-t-2 border-black text-black">
                   <td class="py-1">Total</td>
                   <td class="py-1 text-right tabular-nums">
                     {round(@report.result.total_weight_g)} g

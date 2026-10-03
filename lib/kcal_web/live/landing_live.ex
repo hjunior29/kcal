@@ -23,21 +23,21 @@ defmodule KcalWeb.LandingLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash}>
-      <div class="space-y-16">
+      <div class="space-y-16 text-black">
         <%!-- 1. Hero Section --%>
-        <section class="border-4 border-black bg-white p-6 sm:p-10">
-          <div class="inline-block border-2 border-black bg-brand px-3 py-1 text-xs font-bold uppercase tracking-wider mb-4">
-            Ferramenta Aberta & Gratuita · Sem Cadastro · 100% Privada
+        <section class="border-4 border-black bg-white p-6 sm:p-10 text-black">
+          <div class="inline-block border-2 border-black bg-brand px-3 py-1 text-xs font-bold uppercase tracking-wider mb-4 text-black">
+            Ferramenta Aberta &amp; Gratuita · Sem Cadastro · 100% Privada
           </div>
 
-          <h1 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight leading-none mb-4">
+          <h1 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight leading-none mb-4 text-black">
             Rotulagem Nutricional Anvisa<br />
-            <span class="bg-black text-white px-2">Transparente & One-Shot</span>
+            <span class="bg-black text-white px-2 py-0.5">Transparente &amp; One-Shot</span>
           </h1>
 
-          <p class="max-w-2xl text-base sm:text-lg leading-relaxed mb-8 opacity-85">
+          <p class="max-w-2xl text-base sm:text-lg leading-relaxed mb-8 text-black opacity-90">
             Calcule a informação nutricional oficial para receitas, refeições ou produtos
-            com dados laboratoriais da <strong>Tabela TACO (UNICAMP)</strong> e <strong>TBCA (USP)</strong>.
+            com dados laboratoriais da <strong class="text-black font-extrabold">Tabela TACO (UNICAMP)</strong> e <strong class="text-black font-extrabold">TBCA (USP)</strong>.
             Zero armazenamento de dados: sua receita vive apenas na sua aba e você a exporta em alta resolução.
           </p>
 
@@ -57,128 +57,128 @@ defmodule KcalWeb.LandingLive do
             </a>
           </div>
 
-          <div class="mt-8 pt-6 border-t-2 border-black/20 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-bold uppercase">
+          <div class="mt-8 pt-6 border-t-2 border-black/20 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-bold uppercase text-black">
             <div>
-              <span class="block text-2xl font-extrabold tabular-nums">{@total_foods}+</span>
-              <span class="opacity-70">Alimentos Laboratoriais</span>
+              <span class="block text-2xl font-extrabold tabular-nums text-black">{@total_foods}+</span>
+              <span class="text-black opacity-70">Alimentos Laboratoriais</span>
             </div>
             <div>
-              <span class="block text-2xl font-extrabold tabular-nums">5</span>
-              <span class="opacity-70">Modelos Oficiais Anvisa</span>
+              <span class="block text-2xl font-extrabold tabular-nums text-black">5</span>
+              <span class="text-black opacity-70">Modelos Oficiais Anvisa</span>
             </div>
             <div>
-              <span class="block text-2xl font-extrabold tabular-nums">0%</span>
-              <span class="opacity-70">Persistência em Servidor</span>
+              <span class="block text-2xl font-extrabold tabular-nums text-black">0%</span>
+              <span class="text-black opacity-70">Persistência em Servidor</span>
             </div>
             <div>
-              <span class="block text-2xl font-extrabold tabular-nums">R$ 0</span>
-              <span class="opacity-70">Livre de Cobrança e Planos</span>
+              <span class="block text-2xl font-extrabold tabular-nums text-black">R$ 0</span>
+              <span class="text-black opacity-70">Livre de Cobrança e Planos</span>
             </div>
           </div>
         </section>
 
         <%!-- 2. The One-Shot Philosophy --%>
-        <section class="space-y-6">
+        <section class="space-y-6 text-black">
           <div class="border-b-2 border-black pb-2">
-            <h2 class="text-xl sm:text-2xl font-bold uppercase tracking-tight">
+            <h2 class="text-xl sm:text-2xl font-bold uppercase tracking-tight text-black">
               A Filosofia One-Shot: Uma Calculadora, Não um SaaS
             </h2>
-            <p class="text-sm opacity-70 mt-1">
+            <p class="text-sm text-black opacity-75 mt-1">
               Por que decidimos não salvar nada no banco de dados.
             </p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="border-2 border-black bg-white p-5 flex flex-col justify-between">
+            <div class="border-2 border-black bg-white p-5 flex flex-col justify-between text-black">
               <div>
-                <div class="w-8 h-8 border-2 border-black bg-brand font-black flex items-center justify-center mb-3">
+                <div class="w-8 h-8 border-2 border-black bg-brand font-black flex items-center justify-center mb-3 text-black">
                   1
                 </div>
-                <h3 class="font-bold uppercase tracking-wide text-base mb-2">
+                <h3 class="font-bold uppercase tracking-wide text-base mb-2 text-black">
                   Privacidade Absoluta
                 </h3>
-                <p class="text-sm opacity-80 leading-relaxed">
+                <p class="text-sm text-black opacity-80 leading-relaxed">
                   Sem formulários de login, sem cadastros, sem senhas e sem cookies de rastreamento.
                   Nenhuma receita criada por você passa para o disco do servidor.
                 </p>
               </div>
-              <p class="mt-4 text-xs font-mono font-bold opacity-60">ZERO TRACKING</p>
+              <p class="mt-4 text-xs font-mono font-bold text-black opacity-60">ZERO TRACKING</p>
             </div>
 
-            <div class="border-2 border-black bg-white p-5 flex flex-col justify-between">
+            <div class="border-2 border-black bg-white p-5 flex flex-col justify-between text-black">
               <div>
-                <div class="w-8 h-8 border-2 border-black bg-brand font-black flex items-center justify-center mb-3">
+                <div class="w-8 h-8 border-2 border-black bg-brand font-black flex items-center justify-center mb-3 text-black">
                   2
                 </div>
-                <h3 class="font-bold uppercase tracking-wide text-base mb-2">
-                  Cálculo & Exportação
+                <h3 class="font-bold uppercase tracking-wide text-base mb-2 text-black">
+                  Cálculo &amp; Exportação
                 </h3>
-                <p class="text-sm opacity-80 leading-relaxed">
+                <p class="text-sm text-black opacity-80 leading-relaxed">
                   Adicione os ingredientes, defina a porção e veja a tabela nutricional Anvisa ser gerada
                   na hora. Exporte o rótulo em PNG de alta resolução (2x) ou copie para a área de transferência.
                 </p>
               </div>
-              <p class="mt-4 text-xs font-mono font-bold opacity-60">PNG / CLIPBOARD / PRINT</p>
+              <p class="mt-4 text-xs font-mono font-bold text-black opacity-60">PNG / CLIPBOARD / PRINT</p>
             </div>
 
-            <div class="border-2 border-black bg-white p-5 flex flex-col justify-between">
+            <div class="border-2 border-black bg-white p-5 flex flex-col justify-between text-black">
               <div>
-                <div class="w-8 h-8 border-2 border-black bg-brand font-black flex items-center justify-center mb-3">
+                <div class="w-8 h-8 border-2 border-black bg-brand font-black flex items-center justify-center mb-3 text-black">
                   3
                 </div>
-                <h3 class="font-bold uppercase tracking-wide text-base mb-2">
+                <h3 class="font-bold uppercase tracking-wide text-base mb-2 text-black">
                   Backup Local em JSON
                 </h3>
-                <p class="text-sm opacity-80 leading-relaxed">
+                <p class="text-sm text-black opacity-80 leading-relaxed">
                   Quer guardar sua receita para alterar depois? Baixe o arquivo <code>.json</code> no seu
                   próprio computador e recarregue na calculadora quando precisar.
                 </p>
               </div>
-              <p class="mt-4 text-xs font-mono font-bold opacity-60">SEUS DADOS COM VOCÊ</p>
+              <p class="mt-4 text-xs font-mono font-bold text-black opacity-60">SEUS DADOS COM VOCÊ</p>
             </div>
           </div>
         </section>
 
         <%!-- 3. Scientific Data Sources --%>
-        <section id="dados" class="space-y-6 scroll-mt-6">
+        <section id="dados" class="space-y-6 scroll-mt-6 text-black">
           <div class="border-b-2 border-black pb-2">
-            <h2 class="text-xl sm:text-2xl font-bold uppercase tracking-tight">
+            <h2 class="text-xl sm:text-2xl font-bold uppercase tracking-tight text-black">
               De Onde Vêm os Dados Nutricionais?
             </h2>
-            <p class="text-sm opacity-70 mt-1">
+            <p class="text-sm text-black opacity-75 mt-1">
               Rigor científico: o banco de dados do servidor é estritamente de consulta a tabelas públicas e validadas.
             </p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="border-2 border-black bg-white p-6">
+            <div class="border-2 border-black bg-white p-6 text-black">
               <div class="flex items-center justify-between mb-3 border-b-2 border-black/15 pb-2">
-                <h3 class="font-extrabold uppercase text-lg">Tabela TACO (NEPA / UNICAMP)</h3>
-                <span class="border border-black px-2 py-0.5 text-xs font-bold bg-brand">597 alimentos</span>
+                <h3 class="font-extrabold uppercase text-lg text-black">Tabela TACO (NEPA / UNICAMP)</h3>
+                <span class="border border-black px-2 py-0.5 text-xs font-bold bg-brand text-black">597 alimentos</span>
               </div>
-              <p class="text-sm opacity-85 leading-relaxed mb-4">
+              <p class="text-sm text-black opacity-85 leading-relaxed mb-4">
                 A <strong>Tabela Brasileira de Composição de Alimentos (TACO)</strong>, em sua 4ª edição revisada e
                 ampliada (2011), foi desenvolvida pelo Núcleo de Estudos e Pesquisas em Alimentação da Universidade
                 Estadual de Campinas (NEPA/UNICAMP).
               </p>
-              <ul class="text-xs space-y-1.5 opacity-80 list-disc list-inside">
+              <ul class="text-xs space-y-1.5 text-black opacity-80 list-disc list-inside">
                 <li>Análises físico-químicas de alimentos da biodiversidade brasileira;</li>
                 <li>Valores laboratoriais expressos por 100 g de porção comestível;</li>
                 <li>Perfil completo de macronutrientes, fibra alimentar, sódio e ácidos graxos saturados e trans.</li>
               </ul>
             </div>
 
-            <div class="border-2 border-black bg-white p-6">
+            <div class="border-2 border-black bg-white p-6 text-black">
               <div class="flex items-center justify-between mb-3 border-b-2 border-black/15 pb-2">
-                <h3 class="font-extrabold uppercase text-lg">Tabela TBCA (USP / FoRC)</h3>
-                <span class="border border-black px-2 py-0.5 text-xs font-bold bg-white">Suplemento curado</span>
+                <h3 class="font-extrabold uppercase text-lg text-black">Tabela TBCA (USP / FoRC)</h3>
+                <span class="border border-black px-2 py-0.5 text-xs font-bold bg-white text-black">Suplemento curado</span>
               </div>
-              <p class="text-sm opacity-85 leading-relaxed mb-4">
+              <p class="text-sm text-black opacity-85 leading-relaxed mb-4">
                 A <strong>Tabela Brasileira de Composição de Alimentos (TBCA)</strong>, coordenada pelo Food Research Center
                 (FoRC) da Universidade de São Paulo (USP), complementa nossa base para produtos e preparados
                 de consumo comum ausentes na TACO.
               </p>
-              <ul class="text-xs space-y-1.5 opacity-80 list-disc list-inside">
+              <ul class="text-xs space-y-1.5 text-black opacity-80 list-disc list-inside">
                 <li>Alimentos industrializados e derivados frequentes da rotina alimentar;</li>
                 <li>Critérios de harmonização e padronização com as normas vigentes;</li>
                 <li>Validação nutricional referenciada por instituições científicas nacionais.</li>
@@ -186,48 +186,48 @@ defmodule KcalWeb.LandingLive do
             </div>
           </div>
 
-          <div class="border-2 border-black bg-brand/30 p-4 text-xs leading-relaxed">
+          <div class="border-2 border-black bg-brand p-4 text-xs leading-relaxed text-black">
             <strong>Garantia de Leitura Apenas:</strong> O servidor hospeda a base SQLite de referência exclusivamente em
             modo de leitura para alimentar a busca de alimentos. Nenhuma operação de escrita por usuários é permitida na aplicação.
           </div>
         </section>
 
         <%!-- 4. Regulatory Conformity (ANVISA) --%>
-        <section class="space-y-6">
+        <section class="space-y-6 text-black">
           <div class="border-b-2 border-black pb-2">
-            <h2 class="text-xl sm:text-2xl font-bold uppercase tracking-tight">
+            <h2 class="text-xl sm:text-2xl font-bold uppercase tracking-tight text-black">
               Padrão Regulatório Oficial ANVISA
             </h2>
-            <p class="text-sm opacity-70 mt-1">
+            <p class="text-sm text-black opacity-75 mt-1">
               Fidelidade visual e técnica à RDC nº 429/2020 e Instrução Normativa nº 75/2020.
             </p>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="border-2 border-black p-4 bg-white">
-              <h4 class="font-bold uppercase text-xs mb-1">5 Modelos Gráficos</h4>
-              <p class="text-xs opacity-75">
+            <div class="border-2 border-black p-4 bg-white text-black">
+              <h4 class="font-bold uppercase text-xs mb-1 text-black">5 Modelos Gráficos</h4>
+              <p class="text-xs text-black opacity-75">
                 Vertical (padrão), Vertical Quebrado, Horizontal, Horizontal Quebrado e Linear para embalagens compactas.
               </p>
             </div>
 
-            <div class="border-2 border-black p-4 bg-white">
-              <h4 class="font-bold uppercase text-xs mb-1">Lupa Frontal (Alto Em)</h4>
-              <p class="text-xs opacity-75">
+            <div class="border-2 border-black p-4 bg-white text-black">
+              <h4 class="font-bold uppercase text-xs mb-1 text-black">Lupa Frontal (Alto Em)</h4>
+              <p class="text-xs text-black opacity-75">
                 Cálculo automático dos limites legais por 100g para Gordura Saturada (&ge; 6g) e Sódio (&ge; 600mg).
               </p>
             </div>
 
-            <div class="border-2 border-black p-4 bg-white">
-              <h4 class="font-bold uppercase text-xs mb-1">Cálculo de %VD</h4>
-              <p class="text-xs opacity-75">
+            <div class="border-2 border-black p-4 bg-white text-black">
+              <h4 class="font-bold uppercase text-xs mb-1 text-black">Cálculo de %VD</h4>
+              <p class="text-xs text-black opacity-75">
                 Percentuais de Valores Diários calibrados pela dieta padrão de referência de 2.000 kcal da ANVISA.
               </p>
             </div>
 
-            <div class="border-2 border-black p-4 bg-white">
-              <h4 class="font-bold uppercase text-xs mb-1">Lista de Ingredientes</h4>
-              <p class="text-xs opacity-75">
+            <div class="border-2 border-black p-4 bg-white text-black">
+              <h4 class="font-bold uppercase text-xs mb-1 text-black">Lista de Ingredientes</h4>
+              <p class="text-xs text-black opacity-75">
                 Declaração textual gerada automaticamente na ordem decrescente obrigatória de peso dos insumos.
               </p>
             </div>
@@ -235,11 +235,11 @@ defmodule KcalWeb.LandingLive do
         </section>
 
         <%!-- 5. Bottom Call to Action --%>
-        <section class="border-4 border-black bg-brand p-8 text-center sm:p-12">
-          <h2 class="text-2xl sm:text-4xl font-extrabold uppercase tracking-tight mb-3">
+        <section class="border-4 border-black bg-brand p-8 text-center sm:p-12 text-black">
+          <h2 class="text-2xl sm:text-4xl font-extrabold uppercase tracking-tight mb-3 text-black">
             Pronto para montar sua tabela nutricional?
           </h2>
-          <p class="text-sm sm:text-base opacity-85 max-w-xl mx-auto mb-6">
+          <p class="text-sm sm:text-base text-black opacity-90 max-w-xl mx-auto mb-6">
             Basta abrir a calculadora, digitar o nome da sua receita, buscar os ingredientes e
             exportar sua tabela Anvisa pronta para imprimir ou colar no seu rótulo.
           </p>
@@ -252,7 +252,7 @@ defmodule KcalWeb.LandingLive do
         </section>
 
         <%!-- Footer Note --%>
-        <footer class="border-t-2 border-black pt-6 pb-12 flex flex-col sm:flex-row items-center justify-between text-xs opacity-70 gap-4">
+        <footer class="border-t-2 border-black pt-6 pb-12 flex flex-col sm:flex-row items-center justify-between text-xs text-black opacity-75 gap-4">
           <p>
             <strong>kcal</strong> · Projeto de código aberto para utilidade pública sob licença MIT.
           </p>
