@@ -38,7 +38,7 @@ defmodule KcalWeb.CalculatorLive do
      |> assign(:measure_units, units)
      |> assign(:default_unit_id, default_unit_id)
      |> assign(:query, "")
-     |> assign(:results, Nutrition.search_foods(""))
+     |> assign(:results, [])
      |> assign(:recipe, initial_recipe)
      |> assign(:items, [])
      |> assign(:counter, 0)
@@ -51,7 +51,13 @@ defmodule KcalWeb.CalculatorLive do
 
   @impl true
   def handle_event("search", %{"q" => q}, socket) do
-    {:noreply, assign(socket, query: q, results: Nutrition.search_foods(q))}
+    results =
+      case String.trim(q) do
+        "" -> []
+        term -> Nutrition.search_foods(term)
+      end
+
+    {:noreply, assign(socket, query: q, results: results)}
   end
 
   @impl true
@@ -302,21 +308,6 @@ defmodule KcalWeb.CalculatorLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash}>
-      <%!-- One-shot notice banner --%>
-      <div class="mb-6 border-2 border-black bg-brand/50 p-3.5 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 text-black">
-        <div class="flex items-center gap-2">
-          <span class="text-base font-bold">⚠️</span>
-          <span>
-            <strong>Modo One-Shot (100% Privado):</strong>
-            Esta aplicação não salva nada no servidor. Os dados existem apenas nesta aba.
-            <strong>Exporte sua tabela</strong> antes de sair.
-          </span>
-        </div>
-        <.link navigate={~p"/"} class="underline font-bold text-xs shrink-0 hover:opacity-75 text-black">
-          Sobre os Dados &rarr;
-        </.link>
-      </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start text-black">
         <%!-- Left Column: Recipe Editor (3 cols) --%>
         <div class="lg:col-span-3 space-y-6">
@@ -410,7 +401,11 @@ defmodule KcalWeb.CalculatorLive do
               </form>
 
               <ul class="mt-2 max-h-64 overflow-auto divide-y divide-black/15 border-2 border-black/15">
-                <li :if={@results == []} class="px-3 py-4 text-xs opacity-60 text-center text-black">
+                <li :if={@query == ""} class="px-3 py-6 text-xs text-black/60 text-center flex flex-col items-center justify-center gap-1.5">
+                  <.icon name="hero-magnifying-glass" class="size-5 opacity-40" />
+                  <span>Digite o nome de um alimento acima para pesquisar na base TACO/TBCA.</span>
+                </li>
+                <li :if={@query != "" and @results == []} class="px-3 py-6 text-xs text-black/60 text-center">
                   Nenhum alimento encontrado para "{@query}".
                 </li>
                 <li
@@ -419,7 +414,7 @@ defmodule KcalWeb.CalculatorLive do
                 >
                   <div class="min-w-0">
                     <p class="font-medium text-xs truncate text-black">{r.name}</p>
-                    <p class="text-[10px] opacity-60 truncate text-black">
+                    <p class="text-[10px] text-black/70 truncate">
                       {r.category || "Geral"} · {round(r.energy_kcal)} kcal/100g · {r.source}
                     </p>
                   </div>
@@ -427,9 +422,9 @@ defmodule KcalWeb.CalculatorLive do
                     type="button"
                     phx-click="add_food"
                     phx-value-id={r.id}
-                    class="shrink-0 rounded-none border-2 border-black bg-white text-black px-2.5 py-1 text-xs font-bold hover:bg-black hover:text-white transition-colors"
+                    class="shrink-0 rounded-none border-2 border-black bg-white text-black px-2.5 py-1 text-xs font-bold hover:bg-black hover:text-white transition-colors inline-flex items-center gap-1"
                   >
-                    + Adicionar
+                    <.icon name="hero-plus" class="size-3.5" /> Adicionar
                   </button>
                 </li>
               </ul>
@@ -470,7 +465,7 @@ defmodule KcalWeb.CalculatorLive do
             >
               <p class="font-bold text-sm text-black">Sua receita ainda não possui ingredientes.</p>
               <p class="text-xs opacity-70 max-w-sm mx-auto text-black">
-                Busque alimentos acima e clique em <strong>+ Adicionar</strong> ou clique em
+                Busque alimentos acima e clique em <strong>Adicionar</strong> ou clique em
                 <strong>Carregar Exemplo</strong> para ver uma receita pré-montada.
               </p>
             </div>
@@ -487,9 +482,9 @@ defmodule KcalWeb.CalculatorLive do
                     phx-click="remove_item"
                     phx-value-tid={item.temp_id}
                     title="Remover este ingrediente"
-                    class="shrink-0 border-2 border-black bg-white text-black px-2 py-0.5 text-xs font-bold hover:bg-red-600 hover:text-white hover:border-red-600"
+                    class="shrink-0 border-2 border-black bg-white text-black p-1 hover:bg-red-600 hover:text-white hover:border-red-600 flex items-center justify-center"
                   >
-                    ×
+                    <.icon name="hero-x-mark" class="size-4" />
                   </button>
                 </div>
 
@@ -511,7 +506,7 @@ defmodule KcalWeb.CalculatorLive do
                       <label class="block text-[10px] font-bold uppercase opacity-70 text-black">Medida</label>
                       <select
                         name="measure_unit_id"
-                        class="w-full rounded-none border-2 border-black px-2 py-1 text-sm bg-white text-black focus:outline-none"
+                        class="w-full rounded-none border-2 border-black pl-3 pr-10 py-1 text-sm bg-white text-black focus:outline-none focus:bg-brand cursor-pointer"
                       >
                         <option
                           :for={u <- @measure_units}
@@ -563,13 +558,13 @@ defmodule KcalWeb.CalculatorLive do
                 type="button"
                 phx-click="export_json"
                 disabled={@items == []}
-                class="border-2 border-black bg-white text-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand disabled:opacity-50"
+                class="border-2 border-black bg-white text-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand disabled:opacity-50 inline-flex items-center gap-1.5"
               >
-                💾 Baixar JSON da Receita
+                <.icon name="hero-arrow-down-tray" class="size-4" /> Baixar JSON da Receita
               </button>
 
-              <label class="border-2 border-black bg-white text-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand cursor-pointer inline-flex items-center">
-                📂 Carregar JSON da Receita
+              <label class="border-2 border-black bg-white text-black px-3 py-1.5 text-xs font-bold uppercase hover:bg-brand cursor-pointer inline-flex items-center gap-1.5">
+                <.icon name="hero-arrow-up-tray" class="size-4" /> Carregar JSON da Receita
                 <input
                   type="file"
                   id="recipe-json-import"
@@ -583,7 +578,12 @@ defmodule KcalWeb.CalculatorLive do
         </div>
 
         <%!-- Right Column: Live ANVISA Nutrition Label & Export (2 cols) --%>
-        <div class="lg:col-span-2 lg:sticky lg:top-4 space-y-4 text-black">
+        <div
+          id="nutrition-export-panel"
+          phx-hook="NutritionExport"
+          data-filename={"#{sanitize_filename(@recipe.name)} - tabela nutricional"}
+          class="lg:col-span-2 lg:sticky lg:top-4 space-y-4 text-black min-w-0"
+        >
           <div class="border-2 border-black bg-white text-black p-3 space-y-3">
             <div class="flex items-center justify-between border-b-2 border-black/15 pb-2 text-black">
               <h3 class="font-bold uppercase tracking-wide text-xs text-black">
@@ -622,70 +622,61 @@ defmodule KcalWeb.CalculatorLive do
                 type="button"
                 data-export="download"
                 title="Baixar imagem em PNG de alta resolução"
-                class="flex-1 border-2 border-black bg-brand text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-colors text-center"
+                class="flex-1 border-2 border-black bg-brand text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-colors text-center inline-flex items-center justify-center gap-1.5"
               >
-                ⬇ Baixar PNG
+                <.icon name="hero-arrow-down-tray" class="size-4" /> Baixar PNG
               </button>
               <button
                 type="button"
                 data-export="copy"
                 title="Copiar imagem para colar no WhatsApp, Canva, etc"
-                class="border-2 border-black bg-white text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-brand transition-colors"
+                class="flex-1 border-2 border-black bg-white text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-brand transition-colors inline-flex items-center justify-center gap-1.5"
               >
-                📋 Copiar
-              </button>
-              <button
-                type="button"
-                phx-click="trigger_print"
-                title="Imprimir ou Salvar em PDF"
-                class="border-2 border-black bg-white text-black px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-brand transition-colors"
-              >
-                🖨 Imprimir / PDF
+                <.icon name="hero-document-duplicate" class="size-4" /> Copiar
               </button>
             </div>
             <p data-export-status class="text-xs font-bold text-black" aria-live="polite"></p>
           </div>
 
-          <%!-- Rendered Table with Export Hook --%>
-          <div
-            id="nutrition-export-wrapper"
-            phx-hook="NutritionExport"
-            data-filename={"#{sanitize_filename(@recipe.name)} - tabela nutricional"}
-            class="space-y-4 text-black"
-          >
-            <%!-- Front-of-pack alerts (if thresholds exceeded) --%>
-            <div :if={front_warnings(@report) != [] or info_alerts(@report) != []}>
-              <.nutrition_alerts report={@report} />
+          <%!-- Rendered Table with Horizontal Scroll wrapper so wide tables do not burst the div --%>
+          <div class="border-2 border-black bg-white p-3 space-y-2">
+            <div :if={@view_mode in [:broken, :horizontal, :horizontal_broken]} class="flex items-center gap-1.5 text-[10px] text-black/60 uppercase font-mono">
+              <.icon name="hero-arrows-right-left" class="size-3.5 shrink-0" />
+              <span>Role horizontalmente para ver a tabela completa</span>
             </div>
 
-            <%!-- Selected Table Model --%>
-            <.nutrition_facts
-              :if={@view_mode == :vertical}
-              report={@report}
-              component={@preview_component}
-              show_warnings={false}
-              show_ingredients={false}
-            />
-            <.nutrition_facts_broken
-              :if={@view_mode == :broken}
-              report={@report}
-              component={@preview_component}
-            />
-            <.nutrition_facts_horizontal
-              :if={@view_mode == :horizontal}
-              report={@report}
-              component={@preview_component}
-            />
-            <.nutrition_facts_horizontal_broken
-              :if={@view_mode == :horizontal_broken}
-              report={@report}
-              component={@preview_component}
-            />
-            <.nutrition_facts_linear
-              :if={@view_mode == :linear}
-              report={@report}
-              component={@preview_component}
-            />
+            <div class="w-full overflow-x-auto max-w-full pb-1">
+              <div class="w-max min-w-full flex justify-center">
+                <%!-- Selected Table Model --%>
+                <.nutrition_facts
+                  :if={@view_mode == :vertical}
+                  report={@report}
+                  component={@preview_component}
+                  show_warnings={false}
+                  show_ingredients={false}
+                />
+                <.nutrition_facts_broken
+                  :if={@view_mode == :broken}
+                  report={@report}
+                  component={@preview_component}
+                />
+                <.nutrition_facts_horizontal
+                  :if={@view_mode == :horizontal}
+                  report={@report}
+                  component={@preview_component}
+                />
+                <.nutrition_facts_horizontal_broken
+                  :if={@view_mode == :horizontal_broken}
+                  report={@report}
+                  component={@preview_component}
+                />
+                <.nutrition_facts_linear
+                  :if={@view_mode == :linear}
+                  report={@report}
+                  component={@preview_component}
+                />
+              </div>
+            </div>
           </div>
 
           <%!-- Mandatory Ingredients Declaration --%>

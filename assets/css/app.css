@@ -114,6 +114,12 @@
     outline-offset: 2px;
   }
 
+  /* Keep select chevron arrow comfortably spaced from the right border */
+  select {
+    padding-right: 2.5rem !important;
+    background-position: right 0.75rem center !important;
+  }
+
   /* Every actionable control gets the hand cursor. */
   button:not(:disabled),
   summary,

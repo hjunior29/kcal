@@ -46,14 +46,14 @@ defmodule KcalWeb.LandingLive do
               navigate={~p"/calculadora"}
               class="inline-block border-2 border-black bg-brand px-6 py-3.5 text-base font-bold uppercase tracking-wider text-black hover:bg-black hover:text-white transition-colors"
             >
-              Abrir Calculadora One-Shot →
+              Abrir Calculadora One-Shot <.icon name="hero-arrow-right" class="size-4 inline-block ml-1" />
             </.link>
 
             <a
               href="#dados"
               class="inline-block border-2 border-black bg-white px-5 py-3.5 text-base font-bold uppercase tracking-wider text-black hover:bg-brand transition-colors"
             >
-              Origem dos Dados ↓
+              Origem dos Dados <.icon name="hero-arrow-down" class="size-4 inline-block ml-1" />
             </a>
           </div>
 
@@ -115,10 +115,10 @@ defmodule KcalWeb.LandingLive do
                 </h3>
                 <p class="text-sm text-black opacity-80 leading-relaxed">
                   Adicione os ingredientes, defina a porção e veja a tabela nutricional Anvisa ser gerada
-                  na hora. Exporte o rótulo em PNG de alta resolução (2x) ou copie para a área de transferência.
+                  na hora. Exporte o rótulo em PNG de alta resolução (2x) ou copie direto para colar onde precisar.
                 </p>
               </div>
-              <p class="mt-4 text-xs font-mono font-bold text-black opacity-60">PNG / CLIPBOARD / PRINT</p>
+              <p class="mt-4 text-xs font-mono font-bold text-black opacity-60">PNG / CLIPBOARD</p>
             </div>
 
             <div class="border-2 border-black bg-white p-5 flex flex-col justify-between text-black">
@@ -151,38 +151,84 @@ defmodule KcalWeb.LandingLive do
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="border-2 border-black bg-white p-6 text-black">
-              <div class="flex items-center justify-between mb-3 border-b-2 border-black/15 pb-2">
-                <h3 class="font-extrabold uppercase text-lg text-black">Tabela TACO (NEPA / UNICAMP)</h3>
-                <span class="border border-black px-2 py-0.5 text-xs font-bold bg-brand text-black">597 alimentos</span>
+            <div class="border-2 border-black bg-white p-6 text-black flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3 border-b-2 border-black/15 pb-2">
+                  <h3 class="font-extrabold uppercase text-lg text-black">Tabela TACO (NEPA / UNICAMP)</h3>
+                  <span class="border border-black px-2 py-0.5 text-xs font-bold bg-brand text-black">597 alimentos</span>
+                </div>
+                <p class="text-sm text-black opacity-85 leading-relaxed mb-4">
+                  A <strong>Tabela Brasileira de Composição de Alimentos (TACO)</strong>, em sua 4ª edição revisada e
+                  ampliada (2011), foi desenvolvida pelo Núcleo de Estudos e Pesquisas em Alimentação da Universidade
+                  Estadual de Campinas (NEPA/UNICAMP).
+                </p>
+                <ul class="text-xs space-y-1.5 text-black opacity-80 list-disc list-inside">
+                  <li>Análises físico-químicas de alimentos da biodiversidade brasileira;</li>
+                  <li>Valores laboratoriais expressos por 100 g de porção comestível;</li>
+                  <li>Perfil completo de macronutrientes, fibra alimentar, sódio e ácidos graxos saturados e trans.</li>
+                </ul>
               </div>
-              <p class="text-sm text-black opacity-85 leading-relaxed mb-4">
-                A <strong>Tabela Brasileira de Composição de Alimentos (TACO)</strong>, em sua 4ª edição revisada e
-                ampliada (2011), foi desenvolvida pelo Núcleo de Estudos e Pesquisas em Alimentação da Universidade
-                Estadual de Campinas (NEPA/UNICAMP).
-              </p>
-              <ul class="text-xs space-y-1.5 text-black opacity-80 list-disc list-inside">
-                <li>Análises físico-químicas de alimentos da biodiversidade brasileira;</li>
-                <li>Valores laboratoriais expressos por 100 g de porção comestível;</li>
-                <li>Perfil completo de macronutrientes, fibra alimentar, sódio e ácidos graxos saturados e trans.</li>
-              </ul>
+
+              <div class="mt-5 pt-3 border-t border-black/15 flex flex-wrap gap-3 text-xs">
+                <a
+                  href="https://www.nepa.unicamp.br/taco/tabela.php"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline hover:opacity-75 inline-flex items-center gap-1 text-black"
+                >
+                  <.icon name="hero-arrow-top-right-on-square" class="size-3.5" />
+                  Portal Oficial TACO (UNICAMP)
+                </a>
+                <a
+                  href="https://www.cfn.org.br/wp-content/uploads/2017/03/taco_4_edicao_ampliada_e_revisada.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline hover:opacity-75 inline-flex items-center gap-1 text-black"
+                >
+                  <.icon name="hero-document-text" class="size-3.5" />
+                  Documento Oficial PDF (4ª Edição)
+                </a>
+              </div>
             </div>
 
-            <div class="border-2 border-black bg-white p-6 text-black">
-              <div class="flex items-center justify-between mb-3 border-b-2 border-black/15 pb-2">
-                <h3 class="font-extrabold uppercase text-lg text-black">Tabela TBCA (USP / FoRC)</h3>
-                <span class="border border-black px-2 py-0.5 text-xs font-bold bg-white text-black">Suplemento curado</span>
+            <div class="border-2 border-black bg-white p-6 text-black flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3 border-b-2 border-black/15 pb-2">
+                  <h3 class="font-extrabold uppercase text-lg text-black">Tabela TBCA (USP / FoRC)</h3>
+                  <span class="border border-black px-2 py-0.5 text-xs font-bold bg-white text-black">Suplemento curado</span>
+                </div>
+                <p class="text-sm text-black opacity-85 leading-relaxed mb-4">
+                  A <strong>Tabela Brasileira de Composição de Alimentos (TBCA)</strong>, coordenada pelo Food Research Center
+                  (FoRC) da Universidade de São Paulo (USP), complementa nossa base para produtos e preparados
+                  de consumo comum ausentes na TACO.
+                </p>
+                <ul class="text-xs space-y-1.5 text-black opacity-80 list-disc list-inside">
+                  <li>Alimentos industrializados e derivados frequentes da rotina alimentar;</li>
+                  <li>Critérios de harmonização e padronização com as normas vigentes;</li>
+                  <li>Validação nutricional referenciada por instituições científicas nacionais.</li>
+                </ul>
               </div>
-              <p class="text-sm text-black opacity-85 leading-relaxed mb-4">
-                A <strong>Tabela Brasileira de Composição de Alimentos (TBCA)</strong>, coordenada pelo Food Research Center
-                (FoRC) da Universidade de São Paulo (USP), complementa nossa base para produtos e preparados
-                de consumo comum ausentes na TACO.
-              </p>
-              <ul class="text-xs space-y-1.5 text-black opacity-80 list-disc list-inside">
-                <li>Alimentos industrializados e derivados frequentes da rotina alimentar;</li>
-                <li>Critérios de harmonização e padronização com as normas vigentes;</li>
-                <li>Validação nutricional referenciada por instituições científicas nacionais.</li>
-              </ul>
+
+              <div class="mt-5 pt-3 border-t border-black/15 flex flex-wrap gap-3 text-xs">
+                <a
+                  href="https://www.tbca.net.br/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline hover:opacity-75 inline-flex items-center gap-1 text-black"
+                >
+                  <.icon name="hero-arrow-top-right-on-square" class="size-3.5" />
+                  Portal Oficial TBCA (USP/FoRC)
+                </a>
+                <a
+                  href="https://forc.webhostusp.sti.usp.br/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline hover:opacity-75 inline-flex items-center gap-1 text-black"
+                >
+                  <.icon name="hero-academic-cap" class="size-3.5" />
+                  Food Research Center (FoRC/USP)
+                </a>
+              </div>
             </div>
           </div>
 
@@ -212,9 +258,9 @@ defmodule KcalWeb.LandingLive do
             </div>
 
             <div class="border-2 border-black p-4 bg-white text-black">
-              <h4 class="font-bold uppercase text-xs mb-1 text-black">Lupa Frontal (Alto Em)</h4>
+              <h4 class="font-bold uppercase text-xs mb-1 text-black">Exportação em Alta Resolução</h4>
               <p class="text-xs text-black opacity-75">
-                Cálculo automático dos limites legais por 100g para Gordura Saturada (&ge; 6g) e Sódio (&ge; 600mg).
+                Gere imagens em PNG 2x nítidas prontas para impressão e rótulos, ou copie direto para a área de transferência.
               </p>
             </div>
 
@@ -247,7 +293,7 @@ defmodule KcalWeb.LandingLive do
             navigate={~p"/calculadora"}
             class="inline-block border-2 border-black bg-black text-white px-8 py-4 text-base font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors"
           >
-            Abrir Calculadora One-Shot Agora →
+            Abrir Calculadora One-Shot Agora <.icon name="hero-arrow-right" class="size-5 inline-block ml-1" />
           </.link>
         </section>
 

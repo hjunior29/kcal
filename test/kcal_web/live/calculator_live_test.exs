@@ -58,9 +58,9 @@ defmodule KcalWeb.CalculatorLiveTest do
     %{gram: gram, xicara: xicara, ovo: ovo, arroz: arroz}
   end
 
-  test "calculator renders one-shot notice and empty state", %{conn: conn} do
+  test "calculator renders and empty state", %{conn: conn} do
     {:ok, _lv, html} = live(conn, ~p"/calculadora")
-    assert html =~ "Modo One-Shot (100% Privado)"
+    assert html =~ "Tabela Nutricional ANVISA"
     assert html =~ "Sua receita ainda não possui ingredientes"
   end
 
