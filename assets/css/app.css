@@ -72,6 +72,7 @@
 
   html,
   body {
+    scroll-behavior: smooth;
     background-color: #ffffff !important;
     color: #000000 !important;
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,

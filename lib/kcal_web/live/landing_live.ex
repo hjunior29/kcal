@@ -171,22 +171,31 @@ defmodule KcalWeb.LandingLive do
 
               <div class="mt-5 pt-3 border-t border-black/15 flex flex-wrap gap-3 text-xs">
                 <a
-                  href="https://www.nepa.unicamp.br/taco/tabela.php"
+                  href="https://nepa.unicamp.br/"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="font-bold underline hover:opacity-75 inline-flex items-center gap-1 text-black"
                 >
                   <.icon name="hero-arrow-top-right-on-square" class="size-3.5" />
-                  Portal Oficial TACO (UNICAMP)
+                  Portal Oficial NEPA (UNICAMP)
                 </a>
                 <a
-                  href="https://www.cfn.org.br/wp-content/uploads/2017/03/taco_4_edicao_ampliada_e_revisada.pdf"
+                  href="https://nepa.unicamp.br/wp-content/uploads/sites/27/2023/10/taco_4_edicao_ampliada_e_revisada.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="font-bold underline hover:opacity-75 inline-flex items-center gap-1 text-black"
                 >
                   <.icon name="hero-document-text" class="size-3.5" />
-                  Documento Oficial PDF (4ª Edição)
+                  Tabela TACO em PDF (4ª Edição)
+                </a>
+                <a
+                  href="https://nepa.unicamp.br/wp-content/uploads/sites/27/2023/10/Taco-4a-Edicao.xlsx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline hover:opacity-75 inline-flex items-center gap-1 text-black"
+                >
+                  <.icon name="hero-table-cells" class="size-3.5" />
+                  Tabela TACO em Planilha (XLSX)
                 </a>
               </div>
             </div>
@@ -233,8 +242,7 @@ defmodule KcalWeb.LandingLive do
           </div>
 
           <div class="border-2 border-black bg-brand p-4 text-xs leading-relaxed text-black">
-            <strong>Garantia de Leitura Apenas:</strong> O servidor hospeda a base SQLite de referência exclusivamente em
-            modo de leitura para alimentar a busca de alimentos. Nenhuma operação de escrita por usuários é permitida na aplicação.
+            <strong>Garantia de Privacidade:</strong> O servidor apenas consulta a base pública de alimentos para alimentar a ferramenta de busca. Nenhuma receita ou dado inserido por usuários é salvo ou armazenado no servidor.
           </div>
         </section>
 

@@ -41,7 +41,7 @@ defmodule KcalWeb.Layouts do
           <img src={~p"/images/logo.png"} alt="kcal" class="h-8 w-auto sm:h-9" />
         </.link>
         <nav class="flex items-center gap-2">
-          <.brutal_link navigate={~p"/"}>Sobre os Dados</.brutal_link>
+          <.brutal_link href="/#dados">Sobre os Dados</.brutal_link>
           <.brutal_link navigate={~p"/calculadora"} variant="solid">Calculadora</.brutal_link>
         </nav>
       </div>
